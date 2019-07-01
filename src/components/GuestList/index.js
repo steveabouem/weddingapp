@@ -1,35 +1,21 @@
 import React from 'react';
 import {Container} from '../Sections';
 import TopNav from '../Menus/TopNav';
+import {FirebaseContext} from '../Context';
 
 export default class GuestList extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            list: [],
             selected: {}
         };
 
         this.listItemRef = React.createRef();
-        this.handleSelect = this.handleSelect.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    handleClick(e) {
-
-    }
-
-    handleSelect(e) {
-        // this.listItemRef.current.style (...)
-    }
-
-    get confirmedGuests() {
-        let filteredList = this.state.list.filter( guest => (guest.confirmed));
-        return filteredList;
     }
 
     componentDidMount() {
+        this.context.loadGuestList();
         document.addEventListener('click', this.handleClick);
     }
 
@@ -37,29 +23,44 @@ export default class GuestList extends React.Component {
         document.removeEventListener('click', this.handleClick);
     }
 
+    get confirmedGuests() {
+        let filteredList = [];
+
+        if(this.context.guestList) {
+            filteredList = this.context.guestList.filter( guest => (
+                guest.confirmed
+            ));
+        }	
+
+        return filteredList.length
+    }
+
     render() {
-        const {list, selected} = this.state;
+        // const {list, selected} = this.state;
+        const {addNewGuest, removeGuest, selectGuest, guestSelected, guestList} = this.context;
+
         return(
-            <div className='gla_page'>
+            <div className='gla_page' id='guests-container'>
                 <TopNav />
-                <Container id='guest-list-page' hasScrollicon>
+                <Container id='guest-list-wrap'>
                     <div className='guest-stats'>
                         <span>Total</span>
-                        <span>{list.length}</span>
+                        <span>{guestList && guestList.length}</span>
                         <span>confirmed</span>
                         <span>{this.confirmedGuests}</span>
                         <span>Total</span>
                     </div>
                     <ul className='list'>
                         {
-                            [{name: 'test', number: 'testNum'}, {name: 'test', number: 'testNum'}].map( guest => {
+                            guestList &&  guestList.map( guest => {
                                 return (
                                     <li 
-                                        onClick={this.handleSelect} 
-                                        ref={this.listItemRef} className={'guest-details' + (selected.name === guest.name ? ' active' : '')}
+                                        onClick={selectGuest(guest)} 
+                                        ref={this.listItemRef} className={'guest-details' + (guestSelected && guestSelected.name === guest.name ? ' active' : '')}
                                     >
-                                        Name: {guest.name}
-                                        Contact: {guest.number}
+                                        Nom: {guest.name}
+                                        Cel: {guest.number}
+                                        Confirmé: {guest.confirmed ? 'Oui' : 'Non'}
                                     </li>
                                 );
                             })
@@ -71,3 +72,5 @@ export default class GuestList extends React.Component {
     }
 
 }
+
+GuestList.contextType = FirebaseContext;

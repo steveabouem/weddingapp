@@ -26,12 +26,11 @@ export default class Login extends React.Component {
     render() {
         const validation = Yup.object().shape({
             code: Yup.string()
-                .matches(/^\d*$/, 'Code invalide, chiffres seulement!')
                 .required('Le code secret est nécessaire pour visualiser la page!')
         });
 
         return(
-            <div className='gla_page'>
+            <div className='gla_page' id='login-page'>
                 <Container id='login-wrap'>
                     <div className='form-wrap login'>
                         <Formik 

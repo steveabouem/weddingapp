@@ -1,25 +1,12 @@
 import React from 'react';
+import {FirebaseContext} from '../Context';
 import {Formik, Field} from 'formik';
 import * as Yup from 'yup';
 import {Container} from '../Sections';
 
 export default class RSVPForm extends React.Component {
-    constructor() {
-        super();
-
-        this.state = {
-            // ?
-        }
-
-        this.submit = this.submit.bind(this);
-    }
-
-    submit(values) {
-        console.log('handle with firebase, ', values);
-        
-    }
-
     render() {
+        const {submitRSVP} = this.context;
         const validation = Yup.object().shape({
             firstName: Yup.string()
                 .min(2, 'Le prénom devrait avoir au moins deux(2) lettres:(')
@@ -32,7 +19,9 @@ export default class RSVPForm extends React.Component {
                 .required('Prière d\'insérer un numéro valide()'),
             email: Yup.string()
                 .email('Prière d\'insérer une addresse email valide')
-                .required('Une addresse email est nécessaire pour vous inscrire!')
+                .required('Une addresse email est nécessaire pour vous inscrire!'),
+            code: Yup.string()
+                .required('Vous devez obligatoirement fournir le code d\'invitation!')
         });
         
         return (
@@ -42,9 +31,9 @@ export default class RSVPForm extends React.Component {
                 </div>
                 <div className='form-wrap rsvp'>
                     <Formik 
-                        initialValues = {{firstName: '', lastName: '', email: '', number: ''}}
+                        initialValues = {{firstName: '', lastName: '', email: '', number: '', code: ''}}
                         validationSchema = {validation}
-                        onSubmit={values => this.submit(values)}
+                        onSubmit={values => submitRSVP(values)}
                     >
                         {({errors, touched, submitForm}) => (
                             <React.Fragment>
@@ -68,7 +57,12 @@ export default class RSVPForm extends React.Component {
                                     {errors.number && touched.number && <div className='form-error'>{errors.number}</div>}
                                     <Field name='number' />
                                 </div>
-                                <div className='submit-button' onClick={() => submitForm}>SOUMETTRE</div>
+                                <div className='field-wrap'>
+                                    <label>Code secret</label>
+                                    {errors.code && touched.code && <div className='form-error'>{errors.code}</div>}
+                                    <Field name='code' />
+                                </div>
+                                <div className='submit-button' onClick={submitForm}>SOUMETTRE</div>
                             </React.Fragment>
                         )}
                     </Formik>
@@ -77,3 +71,5 @@ export default class RSVPForm extends React.Component {
         );
     }
 }
+
+RSVPForm.contextType = FirebaseContext;

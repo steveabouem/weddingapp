@@ -41,8 +41,8 @@ export default class GuestList extends React.Component {
 
         return(
             <div className='gla_page' id='guests-container'>
-                <TopNav />
-                <Container id='guest-list-wrap'>
+                <TopNav displayHomeLink/>
+                <Container additionalClass='text-center' id='guest-list-wrap'>
                     <div className='guest-stats'>
                         <span>Total</span>
                         <span>{guestList && guestList.length}</span>
@@ -55,7 +55,7 @@ export default class GuestList extends React.Component {
                             guestList &&  guestList.map( guest => {
                                 return (
                                     <li 
-                                        onClick={selectGuest(guest)} 
+                                        onClick={() => selectGuest(guest)} 
                                         ref={this.listItemRef} className={'guest-details' + (guestSelected && guestSelected.name === guest.name ? ' active' : '')}
                                     >
                                         Nom: {guest.name}

@@ -28,10 +28,10 @@ export default class Evite extends React.Component {
 
 export const Email = ({guest}) => (
     {
-        'to': guest.email,
-        'from': 'test@example.com',
-        'subject': 'Votre invitation électronique',
-        'text': 'Bonjour ' + guest.firstName + '! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir',
-        'html': '<strong>Bonjour ' + guest.firstName + '! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>'
+        "to": guest.email,
+        "from": "test@example.com",
+        "subject": "Votre invitation électronique",
+        "text": "Bonjour " + guest.firstName + "! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir",
+        "html": "<strong>Bonjour " + guest.firstName + "! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>"
       }
 );

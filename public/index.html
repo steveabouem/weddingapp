@@ -11,25 +11,12 @@
     <script defer src="/__/firebase/6.1.1/firebase-messaging.js"></script>
     <script defer src="/__/firebase/6.1.1/firebase-storage.js"></script>
     <script defer src="/__/firebase/init.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Dancing+Script&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
     <script src="/__/firebase/6.2.0/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-        https://firebase.google.com/docs/web/setup#reserved-urls -->
     <script src="/__/firebase/init.js"></script>
   </body>
 </html>

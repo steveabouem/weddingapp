@@ -5,10 +5,15 @@ import Main from '../Main';
 import GuestList from '../GuestList';
 import Login from '../Admin/Login';
 import {AdminContext, FirebaseContext} from '../Context';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class WorkSpace extends React.Component {
     constructor() {
         super();
+        //init taost
+        toast.configure()
+
         // api calls
         this.loginAdmin = (entry) => {
             axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/loginAdmin', 
@@ -50,10 +55,15 @@ export default class WorkSpace extends React.Component {
                 { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
                 'content-type': 'application/json' }
                 }, 
-                {data: userInfo}
+                {data: {'userInfo': userInfo}}
             )
-            .then( response => {
-                console.log(response);
+            .then( res => {
+                console.log({res});
+                
+                toast.warn("Votre soumission a été envoyée!", {
+                    position: 'bottom-right'
+                  });
+            
             })
             .catch( error => {
                 console.log(error);
@@ -80,8 +90,21 @@ export default class WorkSpace extends React.Component {
 
         };
 
-        this.sendEmailInvite = (action) => {
-
+        this.sendEmailInvite = (content) => {
+            const email = `Chér(e) ${content.name} Merci de bien vouloir vous joindre à nous pour célébrer notre union. Votre invitation se trouve en pièce-jointe.`;
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/sendEmail', 
+            {headers: 
+            { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+            'content-type': 'application/json' }
+            }, 
+            {data: {email}}
+        )
+        .then( response => {
+            console.log(response);
+        })
+        .catch( error => {
+            console.log(error);
+        })  
         };
 
         this.sendSMS = (action) => {
@@ -100,9 +123,8 @@ export default class WorkSpace extends React.Component {
 
     }
 
-    selectGuest(guest) {
-        console.log({guest});
-        
+    selectGuest(guestSelected) {
+        this.setState({guestSelected});
     }
 
     render() {

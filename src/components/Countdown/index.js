@@ -1,64 +1,40 @@
 import React from 'react';
+import FlipClock from 'x-react-flipclock';
 
-var moment = require('moment');
-
-export default class Countdown extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            timestamp: moment(),
-            count: ''
-        };
-
-        this.renderCountdown = this.renderCountdown.bind(this);
-    }
-
-    renderCountdown() {
-        let {timestamp} = this.state,
-        values = [
-            {type: 'days', value: timestamp.diff('2019, 12, 28 12:30', 'days')},
-            {type: 'hours', value: timestamp.diff('2019, 12, 28 12:30', 'hours')},
-            {type: 'minutes', value: timestamp.diff('2019, 12, 28 12:30', 'minutes')},
-            {type: 'seconds', value: timestamp.diff('2019, 12, 28 12:30', 'seconds')}
-        ];
-
-        return (
-            <span className='countdown-row countdown-show3'>
-                {values.map( unit => (
-                    <span className='countdown-section'>
-                        <span className='countdown-amount'>
-                            {unit.value}
-                        </span>
-                        <span className='countdown-period'>
-                            {unit.type}
-                        </span>
-                    </span>
-                ))}
-            </span>
-        );
-    }
-
-    componentDidMount() {
-        setTimeout(() => {
-            this.setState({timestamp: moment()});
-          }, 1000);
-    }
-    
-    componentDidUpdate() {
-        setTimeout(() => {
-            this.setState({timestamp: moment()});
-          }, 1000);
-    }
-
-    render() {
-        return (
-            <div className='gla_countdown is-countdown'>
-                <div className='gif-container'>
-                    <div className=' animated-div countdown-gif' />
-                </div>
-                <h2>Le 28 Décembre 2019</h2>
-                {this.renderCountdown()}
-            </div>
-        );
-    }
-}
+export const Countdown =() => (
+    <div className='bottom-section-wrap'>
+        <div className='gif-container'>
+            <div className=' animated-div countdown-gif' />
+        </div>
+        <div className='flipclock-wrap'>
+            <FlipClock 
+                type = "countdown"
+                count_to = "2019/12/28 00:00:00"
+                style={{width: '80%'}}
+                units={[
+                    {
+                        sep: '/',
+                        type: 'months',
+                        title: 'Mois',
+                    },
+                    {
+                        sep: '/',
+                        type: 'days',
+                        title: 'Jours',
+                    },
+                    {
+                        sep: ':',
+                        type: 'hours',
+                        title: 'Heures',
+                    },
+                    {
+                        sep: ':',
+                        type: 'seconds',
+                        title: 'Secondes',
+                    },
+                ]}
+            />
+        </div>
+        {/* </span> */}
+    </div>
+);

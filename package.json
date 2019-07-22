@@ -12,6 +12,8 @@
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
+    "react-toastify": "^5.3.1",
+    "x-react-flipclock": "^0.1.184153",
     "yup": "^0.27.0"
   },
   "scripts": {

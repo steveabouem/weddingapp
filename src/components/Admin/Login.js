@@ -31,7 +31,11 @@ export default class Login extends React.Component {
 
         return(
             <div className='gla_page' id='login-page'>
-                <Container id='login-wrap'>
+                <Container additionalClass='text-center' id='login-wrap'>
+                    <div className='bottom-section-wrap'>
+                        <h1> Espace Administrateur</h1>
+                        <p>Cette page est réservée aux administreurs du site. Prière de cliquer sur RETOUR si vous n`êtes pas administrateur.</p>
+                    </div>
                     <div className='form-wrap login'>
                         <Formik 
                             validationSchema = {validation}

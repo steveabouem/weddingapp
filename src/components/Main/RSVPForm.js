@@ -31,7 +31,7 @@ export default class RSVPForm extends React.Component {
                 </div>
                 <div className='form-wrap rsvp'>
                     <Formik 
-                        initialValues = {{firstName: '', lastName: '', email: '', number: '', code: ''}}
+                        initialValues = {{firstName: '', lastName: '', email: '', number: '', code: '', uid: ''}}
                         validationSchema = {validation}
                         onSubmit={values => submitRSVP(values)}
                     >

@@ -106,8 +106,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                         ]
                     };
                     sgMail.send(body);
-                }
-            )
+            })
             .then( () => {
                 guestList.doc(userInfo.uid).set(userInfo);
                 res.send({

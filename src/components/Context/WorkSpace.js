@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
+import moment from 'moment';
 import Main from '../Main';
 import GuestList from '../GuestList';
 import Login from '../Admin/Login';
@@ -50,6 +51,8 @@ export default class WorkSpace extends React.Component {
         };
 
         this.submitRSVP = (userInfo) => {
+            userInfo.registered_on = moment();
+
             axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/submitRSVP', 
                 {headers: 
                 { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
@@ -57,13 +60,11 @@ export default class WorkSpace extends React.Component {
                 }, 
                 {data: {'userInfo': userInfo}}
             )
-            .then( res => {
-                console.log({res});
-                
+            .then( () => {
                 toast.warn("Votre soumission a été envoyée!", {
                     position: 'bottom-right'
                   });
-            
+                  
             })
             .catch( error => {
                 console.log(error);

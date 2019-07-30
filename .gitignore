@@ -26,4 +26,6 @@ package-lock.json
 ./history
 /.history
 myvars
+node_modules
+
 history

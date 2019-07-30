@@ -16,7 +16,8 @@
     "axios": "^0.19.0",
     "cors": "^2.8.5",
     "firebase-admin": "~7.0.0",
-    "firebase-functions": "^2.3.0"
+    "firebase-functions": "^2.3.0",
+    "image-to-base64": "^2.0.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.1.6"

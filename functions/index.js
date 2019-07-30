@@ -3,8 +3,9 @@ const functions = require('firebase-functions');
 const env = functions.config();
 const cors = require('cors')({origin: true});
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(env.sendgrid_api.key);
+const image2base64 = require('image-to-base64');
 
+sgMail.setApiKey(env.sendgrid_api.key);
 admin.initializeApp(functions.config().firebase);
 
 const db = admin.firestore();
@@ -46,8 +47,17 @@ exports.sendSms = functions.https.onRequest((req, res) => {
 
 exports.sendEmail = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        let email = req.body.email;
-        sgMail.send(email)
+        let email = req.body.content.email,
+        firstName =  req.body.content.firstName,
+        lastName =  req.body.content.lastName,
+        body = {
+            to: email,
+            from: {name: 'Jacques Arnaud & Grace Lyne', email: 'ourwedding@now.com'},
+            subject: `Invitation électronique pour ${lastName} ${firstName}`,
+            content: {type: 'text/html', value: `<strong>Bonjour ${firstName}! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>`},
+            attachment: null
+        };
+        sgMail.send(body)
         .then( data => {
             res.send({
                 code: 200,
@@ -67,22 +77,47 @@ exports.sendEmail = functions.https.onRequest((req, res) => {
 // ==========GUEST MANAGEMENT==========
 exports.submitRSVP = functions.https.onRequest((req, res) => {
     cors( req, res, () => {
-        let userInfo = req.body.userInfo;
+        let userInfo = req.body.userInfo,
+        email = req.body.userInfo.email,
+        firstName =  req.body.userInfo.firstName,
+        lastName =  req.body.userInfo.lastName,
+        code = userInfo.code,
+        src = './goofy_blue.jpeg',
+        dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
+
         userInfo.uid = uid(16);
-        userInfo.confirmed = false;
-        if(userInfo.code === env.invitation_code.key) {
-            guestList.doc(userInfo.uid).set(userInfo)
-            .then( response => {
+        if(code === env.invitation_code.key) {
+            image2base64(src)
+            .then(
+                (response) => {
+                    let body = {
+                        to: email,
+                        subject: `Invitation électronique pour ${lastName} ${firstName}`,
+                        from: {name: 'Jacques Arnaud & Grace Lyne', email: 'ourwedding@now.com'},
+                        content: [{type: 'text/html', value: `<strong>Bonjour ${firstName}! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>`}],
+                        attachments: [
+                            {
+                                content: response,
+                                filename: `Invitation - ${firstName} ${lastName}.jpeg` + (req.body.plusOne ? ` ${req.body.plusOne}` : ''),
+                                type: 'image/jpeg',
+                                disposition: 'attachment',
+                                contentId: 'eVite'
+                            },
+                        ]
+                    };
+                    sgMail.send(body);
+                }
+            )
+            .then( () => {
+                guestList.doc(userInfo.uid).set(userInfo);
                 res.send({
                     code: 200,
-                    response
+                    data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
                 });
             })
-            .catch( error => {
-                res.send({
-                    code: 500,
-                    error
-                });
+            .catch(
+                (error) => {
+                    console.log('base64', error);
             });
         } else {
             res.send({

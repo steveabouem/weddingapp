@@ -14,8 +14,8 @@ export default class GuestList extends React.Component {
         this.listItemRef = React.createRef();
     }
 
-    componentDidMount() {
-        this.context.loadGuestList();
+    async componentDidMount() {
+        await this.context.loadGuestList();
         document.addEventListener('click', this.handleClick);
     }
 
@@ -25,23 +25,20 @@ export default class GuestList extends React.Component {
 
     get confirmedGuests() {
         let filteredList = [];
-
         if(this.context.guestList) {
             filteredList = this.context.guestList.filter( guest => (
                 guest.confirmed
             ));
         }	
-
         return filteredList.length
     }
 
     render() {
-        // const {list, selected} = this.state;
         const {addNewGuest, removeGuest, selectGuest, guestSelected, guestList} = this.context;
 
         return(
             <div className='gla_page' id='guests-container'>
-                <TopNav displayHomeLink/>
+                <TopNav displayHomeLink additionalClassName='admin-nav' navStyle={{background: '#108fa0!important'}}/>
                 <Container additionalClass='text-center' id='guest-list-wrap'>
                     <div className='guest-stats'>
                         <span>Total</span>
@@ -52,15 +49,16 @@ export default class GuestList extends React.Component {
                     </div>
                     <ul className='list'>
                         {
-                            guestList &&  guestList.map( guest => {
+                            guestList && guestList.length > 0 && guestList.map( guest => {
                                 return (
                                     <li 
                                         onClick={() => selectGuest(guest)} 
                                         ref={this.listItemRef} className={'guest-details' + (guestSelected && guestSelected.name === guest.name ? ' active' : '')}
                                     >
-                                        Nom: {guest.name}
-                                        Cel: {guest.number}
-                                        Confirmé: {guest.confirmed ? 'Oui' : 'Non'}
+                                        <span><b>Nom:</b> {guest.lastName}</span>
+                                        <span><b>Prénom:</b> {guest.firstName}</span>
+                                        <span><b>Cel:</b> {guest.number}</span>
+                                        <span><b>Confirmé:</b> {guest.confirmed ? 'Oui' : 'Non'}</span>
                                     </li>
                                 );
                             })

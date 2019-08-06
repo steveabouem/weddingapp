@@ -4,11 +4,11 @@ import TopNav from '../Menus/TopNav';
 import {Container} from '../Sections';
 import {Countdown} from '../Countdown';
 import RSVPForm from './RSVPForm';
+import {MusicPlayer} from '../MusicPlayer';
 
 export default class Main extends React.Component {
     scrollNextSection() {
         console.log('scroll');
-        
     }
 
     render() {
@@ -19,8 +19,9 @@ export default class Main extends React.Component {
                         additionalClass='text-center'
                         id='intro-section'
                     >
-                        <div className='gif-container'>
-                        </div>
+                        <div className='gif-container'/>
+                        <div className='inner-left'/>
+                        <div className='inner-right'/>
                         <h1>Jacques & Grace</h1>
                         <div className='bottom-section-wrap'>
                             <h3>Notre mariage</h3>
@@ -38,6 +39,7 @@ export default class Main extends React.Component {
                         <div className='gif-container'>
                             <div className='animated-div our-wedding' />
                         </div>
+                        <MusicPlayer />
                         <div className='bottom-section-wrap'>
                             <h3>Notre histoire</h3>
                             <p>

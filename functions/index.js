@@ -1,13 +1,15 @@
+
 const admin = require('firebase-admin');
+var {Storage} = require('@google-cloud/storage');
 const functions = require('firebase-functions');
 const env = functions.config();
 const cors = require('cors')({origin: true});
 const sgMail = require('@sendgrid/mail');
 const image2base64 = require('image-to-base64');
-
 sgMail.setApiKey(env.sendgrid_api.key);
 admin.initializeApp(functions.config().firebase);
-
+const storage = new Storage();
+const playlistRef = storage.bucket('gs://our-wedding-55849.appspot.com/wedding_playlist');
 const db = admin.firestore();
 const guestList = db.collection('guests');
 var uid = (length) => {
@@ -24,6 +26,7 @@ var uid = (length) => {
 // I - ADMIN AUTH
 // II - ADMIN OPERATIONS ( Updates, uploads, sms, etc... )
 // III - GUEST MANAGEMENT
+// IV - MUSIC PLAYLIST
 // ==========*==========
 
 // ==========ADMIN AUTH==========
@@ -82,8 +85,9 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
         firstName =  req.body.userInfo.firstName,
         lastName =  req.body.userInfo.lastName,
         code = userInfo.code,
-        src = './goofy_blue.jpeg',
-        dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
+        src = './banner.jpeg';
+        // USE TO VERIFY DUBS
+        // dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
 
         userInfo.uid = uid(16);
         if(code === env.invitation_code.key) {
@@ -116,7 +120,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
             })
             .catch(
                 (error) => {
-                    console.log('base64', error);
+                console.log('base64', error);
             });
         } else {
             res.send({
@@ -170,18 +174,24 @@ exports.removeGuest = functions.https.onRequest((req, res) => {
 
 exports.loadGuestList = functions.https.onRequest((req, res) => {
     cors( req, res, () => {
-        let response = [];
+        let list = [];
         guestList.get()
         .then(snapshot => {
-            snapshot.forEach(document => {
-                response.push(document.data());
+            snapshot.forEach(doc => {
+                let guest = doc.data();
+                list.push({...guest, code:'*******************'});
+                console.log(doc.data());
+                console.log({list});
             });
+        })
+        .then(() => {
             res.send({
                 code: 200,
-                response: response
+                response: list
             });
         })
         .catch(error => {
+            console.log(error);
             res.send({
                 code: 500,
                 error
@@ -191,3 +201,22 @@ exports.loadGuestList = functions.https.onRequest((req, res) => {
 });
 
 // ==========end GUEST MANAGEMENT==========
+
+// ==========MUSIC PLAYLIST==========
+exports.loadPlaylist = functions.https.onRequest((req, res) => {
+    cors( req, res, () => {
+        playlistRef.getFiles()
+        .then(playlist => {
+            res.send({
+                playlist
+            });
+        })
+        .catch(error => {
+            res.send({
+                error
+            });
+        });
+    });
+});
+// ==========end PLAYLIST==========
+

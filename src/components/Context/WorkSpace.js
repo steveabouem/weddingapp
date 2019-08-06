@@ -30,7 +30,7 @@ export default class WorkSpace extends React.Component {
             })
             .catch( error => {
                 console.log(error);
-            })
+            });
         };
         
         this.loadGuestList = () => {
@@ -50,6 +50,22 @@ export default class WorkSpace extends React.Component {
             });
         };
 
+        this.loadPlaylist = () => {
+            axios.get('https://us-central1-our-wedding-55849.cloudfunctions.net/loadPlaylist', 
+            {headers: 
+            { Authorization: 'Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo',
+            'content-type': 'application/json' }
+            })
+            .then( playlist => {
+                this.setState({playlist});
+            })
+            .catch( () => {
+                toast.error('Lecteur audio non disponible!', {
+                    position: 'bottom-right'
+                });
+            });
+        };
+
         this.submitRSVP = (userInfo) => {
             userInfo.registered_on = moment();
 
@@ -61,10 +77,9 @@ export default class WorkSpace extends React.Component {
                 {data: {'userInfo': userInfo}}
             )
             .then( () => {
-                toast.warn("Votre soumission a été envoyée!", {
+                toast.warn('Votre soumission a été envoyée!', {
                     position: 'bottom-right'
                   });
-                  
             })
             .catch( error => {
                 console.log(error);
@@ -112,13 +127,23 @@ export default class WorkSpace extends React.Component {
 
         };
         
-        // state mutators
         this.selectGuest = this.selectGuest.bind(this);
-
         this.state = {
             hasAdminPrivileges: false,
             rsvpValues: null,
             guestList: null,
+            playlist: [
+                {
+                    artistName: 'Runtown',
+                    title: 'Mad over you',
+                    mp3: bucketURl + 'mad_over_you'
+                },
+                {
+                    artistName: 'Major',
+                    title: 'Why I love you',
+                    mp3: bucketURl + 'why_i_love_you'
+                }
+            ],
             guestSelected: null
         };
 
@@ -129,21 +154,25 @@ export default class WorkSpace extends React.Component {
     }
 
     render() {
-        const {hasAdminPrivileges,rsvpValues, guestSelected, guestList} = this.state;
+        const {hasAdminPrivileges,rsvpValues, guestSelected, guestList, playlist} = this.state;
         return (
             <FirebaseContext.Provider value={{
+                // properties
                 hasAdminPrivileges,
                 rsvpValues,
-                selectGuest: this.selectGuest,
                 guestSelected,
                 guestList,
-
+                playlist,
+                
+                // mutators
+                selectGuest: this.selectGuest,
                 addNewGuest: this.addNewGuest,
                 removeGuest: this.removeGuest,
                 sendSMS: this.sendSMS,
                 submitRSVP: this.submitRSVP,
                 loginAdmin: this.loginAdmin,
-                loadGuestList: this.loadGuestList
+                loadGuestList: this.loadGuestList,
+                loadPlaylist: this.loadPlaylist
             }}>
                 <Router>
                     <Switch>
@@ -158,3 +187,5 @@ export default class WorkSpace extends React.Component {
 }
 
 WorkSpace.contextType = AdminContext;
+
+const bucketURl = 'https://storage.cloud.google.com/wedding_playlist/';

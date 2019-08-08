@@ -80,20 +80,9 @@ body {
 	padding:0;
 	min-height:100%;
 	background-color: #fff;
-	font-family: 'Raleway', sans-serif;
+	font-family: 'Quicksand', sans-serif;
 }
-/* ======ADDED FONT FACE====== */
-@font-face {
-	font-family: 'Raleway', sans-serif;
-	font-weight: 400 18px/18px ;
-	src: local('themify'), 
-	url('../fonts/fonts/themify.ttf'),
-	url('../fonts/fonts/themify.woff'),
-	url('../fonts/fonts/themify.eot'),
-	url('../fonts/fonts/themify.svg'),
-	format('svg')
-}
-/* ======.====== */
+
 .gla_noheader {
 	height: 5px;
 }
@@ -145,12 +134,12 @@ html {
   }
    
   ::-webkit-scrollbar-thumb {
-	background: rgb(241, 241, 197); 
+	background: #ffb487; 
 	border-radius: 5px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-	background: rgb(241, 241, 197); 
+	background: #ffb487; 
   }
   /* ======END====== */
 
@@ -163,26 +152,29 @@ html {
 
 /* ==CONTAINERS== */
 #main-page, #intro-section {
-	background-image: url('../../../assets/images/hold_hands_filtered.jpeg');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-attachment: fixed;
-	height: 100%;
-	width: 100%;
-	display: flex;
+	background: url('../../../assets/images/alley_photoshoot.jpeg') left top no-repeat, url('../../../assets/images/tongue_beach.jpeg') right top no-repeat;
+    background-repeat: no-repeat;
+    background-size: 50% 100%, 50% 100%;
+    background-attachment: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-position-y: 55%;
     flex-direction: column;
     justify-content: flex-end;
-    overflow: hidden;
+	overflow: hidden;
 }
 
 #intro-section {
-	/* background-image: url('https://images.unsplash.com/photo-1530189955154-fb007ea08a76?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80'); */
-	background-image: url('../../../assets//images//laughter_1.jpeg');
+	background: url('../../../assets/images/lone_sea_he.jpeg') right top no-repeat, url('../../../assets/images/lone_tree_she.jpeg') left top no-repeat;
+	background-size: 50% 90%, 50% 90%;
+	background-position-y: 50%, 30%;
+	/* background-attachment: fixed; */
 }
 
 #intro-section h1 {
 	text-align: center;
-	font-family: 'Dancing Script', cursive;
+	font-family: 'Quicksand', sans-serif;
 	font-size: 50px;
     color: white;
     position: relative;
@@ -190,19 +182,21 @@ html {
 	animation: reveal 1.5s linear;
 }
 
+#intro-section .gif-container {
+	height: 10%!important;
+}
+
 #login-page {
-	background-image: url(https://images.unsplash.com/photo-1533875726-f99f0626ef42?ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80);
+	background-image: url('https://images.unsplash.com/photo-1533875726-f99f0626ef42?ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80');
     background-repeat: no-repeat;
 	background-size: cover;
-	/* padding-top: 15%; */
 }
 
 #main-countdown {
 	background-image: url('../../../assets//images//bannner.jpeg');
-	background-size: 100% 59%;
-    background-position-y: 37%;
+	background-size: 100% 60%;
+    background-position-y: center;
 	background-repeat: no-repeat;
-	background-attachment: fixed;
 	display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -211,8 +205,8 @@ html {
 }
 
 #wedding-details {
-	background-image: url('https://images.unsplash.com/photo-1487530811176-3780de880c2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80');
-    background-repeat: no-repeat;
+	background-image: url('../../../assets//images//toc_toc_couple.jpeg');
+	background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
     height: 100%;
@@ -224,8 +218,9 @@ html {
 }
 
 #rsvp-wrap {
-	background-image: url('https://images.unsplash.com/photo-1533907650686-70576141c030?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80');
-    background-size: cover;
+	background-image: url('https://images.unsplash.com/photo-1487530811176-3780de880c2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80');
+	background-size: cover;
+	background-attachment: fixed;
     margin: auto;
     width: 100%;
     display: flex;
@@ -240,17 +235,61 @@ html {
 }
 
 #guests-container {
-	padding-top: 15%;
-	background-repeat: no-repeat!important;
+	padding-top: 6%;
     width: 100%;
     height: 100%;
-    background-size: cover!important;
-    background: url('https://images.unsplash.com/photo-1494937503234-9c57a66056cf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80');
+}
+
+.admin-nav {
+	background-color: #23c9df!important;
 }
 
 #guest-list-wrap {
 	padding: 5%;
-    background: #fffda93d;
+    background: #f6ede8;
+    display: flex;
+    color: black;
+    height: 80%;
+    position: relative;
+}
+
+.guest-stats {
+	display: flex;
+    flex-direction: column;
+    position: absolute;
+    border: 1px solid;
+    padding: 1%;
+    align-items: center;
+    width: 43%;
+    top: 5%;
+    height: 20%;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    align-items: center;
+    width: 43%;
+    top: 2%;
+    left: 50%;
+    list-style: none;
+}
+
+.guest-details {
+	display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #e8e0dc;
+	padding: 1%;
+	margin: 0 0 1% 0;
+	color: black;
+	transition: all .3s;
+}
+
+.guest-details:hover {
+	transform: translateY(-2px);
+	box-shadow: 1px 1px black;
 }
 
 .field-wrap {
@@ -274,7 +313,7 @@ html {
 	width: 30%;
     margin: 15px auto;
     text-align: center;
-    background: yellow;
+	background: #f7792f;
     padding: 5px;
     border-radius: 5px;
 	border: 1px solid black;
@@ -282,9 +321,7 @@ html {
 }
 
 .submit-button:hover {
-	box-shadow: 3px 1px 1px black;
-    color: white;
-    padding: 7px;
+	background: #ffb487;
 }
 
 .form-error {
@@ -305,7 +342,7 @@ html {
     width: 100%;
 	top: 0%;
 	/* background-color: #ecef1b; */
-	background-color: #f7ffff;
+	background-color: #23c9df;
 }
 
 .animated-div {
@@ -316,12 +353,12 @@ html {
 }
 
 .our-wedding {
-	background-image: url('../images/animations/ourwedding.gif');
+	background-image: url('../images/animations/ourwedding_wh.gif');
 	height: 100%;
 }
 
 .countdown-gif {
-	background-image: url('../images/animations/savethedate.gif');
+	background-image: url('../images/animations/savethedate_wh.gif');
 	height: 100%;
 }
 
@@ -336,12 +373,12 @@ html {
 }
 
 .rsvp-form {
-	background-image: url('../images/animations/rsvp.gif');
+	background-image: url('../images/animations/rsvp_wh.gif');
 	height: 100%;
 }
 
 .thank-you {
-	background-image: url('../images/animations/thanks_gold_wh.gif');
+	background-image: url('../images/animations/thnyou_wh.gif');
 	height: 100%;
 }
 /* ==GIFS END== */
@@ -349,7 +386,8 @@ html {
 /* ======COUNTDOWN====== */
 .bottom-section-wrap {
 	height: 20%;
-	background: #ffffffad;
+	background: #f6ede8;
+	color: black;
 	display: flex;
 	overflow: hidden;
 }
@@ -370,6 +408,19 @@ html {
 	transition: none;
 }
 /* ======CONTDOwN END====== */
+
+/* ======MUSIC PLAYER====== */
+.progress-bar {
+	color: black;
+    background-color: orange;
+    height: 10px;
+    width: 200px;
+    border-radius: 5px;
+    transition: all 0.2s ease 0s;
+    position: relative;
+}
+/* ======MUSIC PLAYER END====== */
+
 
 /* ======ANIMATIONS====== */
 @keyframes reveal {
@@ -1676,7 +1727,6 @@ header {
 	}
 	.gla_default_menu > ul > li > a {
 		display: block;
-		padding: 32px 20px;
 		-webkit-transition: all 0.3s;
 		-o-transition: all 0.3s;
 		transition: all 0.3s;
@@ -2175,7 +2225,8 @@ ul.mega-menu {
 			border-bottom: 1px solid rgba(255,255,255,0.05);
 		}
 			header nav.gla_transp_nav a {
-				color: #fff;
+				color: black;
+				padding: 10px;
 			}
 			.gla_first_step header nav.gla_transp_nav {
 				background-color: rgba(255,255,255,0.9);
@@ -5848,9 +5899,6 @@ footer {
 /*Responsive*/
 
 @media (max-width:1100px){
-	
-
-
 	.gla_page {
 		padding: 0;
 	}
@@ -5884,9 +5932,7 @@ footer {
 		border: 0;
 		margin: 0;
 	}
-	.gla_default_menu {
-		display: none;
-	}
+
 	header nav {
 		top: 0;
 	}
@@ -6086,7 +6132,7 @@ footer {
 .mobile .gla_menu_item {
 	margin: 0;
 }
-.mobile .gla_iphone,
+/* .mobile .gla_iphone,
 .gla_top_menu, 
 .gla_header_address,
 .gla_browsers,
@@ -6095,7 +6141,7 @@ footer {
 .mobile.landscape .gla_scroll_down,
 .gla_first_step .gla_header_lang ul  {
 	display: none;
-}
+} */
 .gla_fixed, 
 .tablet .gla_fixed {
 	background-attachment:scroll!important;
@@ -6481,39 +6527,46 @@ header nav.active .gla_logo {
 .add-to-box {
 	text-align: center;
 }
-.add-to-cart {
-	margin-right: auto;
-	margin-left: auto;
-}
-/*Header Login Form*/
-.gla_header_login .btn {
-	padding: 5px 15px;
-}
-.gla_header_login {
-	padding: 12px 0;
-	margin-right: 40px;
-	position: relative;
-	z-index: 3;
-}
 
 
 }
 @media (max-width:568px){
+/* ======CUSTOM MEDIA QUERY====== */
+	.gif-container {
+		height: 10%!important;
+	}
 
-	.gla_top_menu > li > a {
-		padding: 13px 16px;
+	#intro-section {
+		background: url('../../../assets/images/lone_sea_he.jpeg');
+		background-attachment: fixed;
+		background-size: cover;
+		background-position-x: 55%;
+	}
+
+	#intro-section h1 {
+		bottom: 6%;
+	}
+
+	#main-page {
+		background: url('../../../assets/images/lone_tree_she.jpeg');
+		background-size: cover;
+	}
+
+	#wedding-details {
+		background-position-x: center;
+	}
+
+	#main-countdown {
+		background-size: 100%;
+		background-position-y: 45%;
+	}
+
+	.bottom-section-wrap {
+		height: 40%;
+	}
+
+	.field-wrap {
+		width: 80%;
 	}
 }
-
-@media (max-width:480px){
-	.gla_iphone {
-		display: none;
-	}
-	.gla_top_menu > li > a {
-		padding: 13px 16px;
-	}
-}
-/*Responsive end*/
-
-
 

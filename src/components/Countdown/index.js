@@ -14,11 +14,6 @@ export const Countdown =() => (
                 units={[
                     {
                         sep: '/',
-                        type: 'months',
-                        title: 'Mois',
-                    },
-                    {
-                        sep: '/',
                         type: 'days',
                         title: 'Jours',
                     },
@@ -26,6 +21,11 @@ export const Countdown =() => (
                         sep: ':',
                         type: 'hours',
                         title: 'Heures',
+                    },
+                    {
+                        sep: ':',
+                        type: 'minutes',
+                        title: 'Minutes',
                     },
                     {
                         sep: ':',

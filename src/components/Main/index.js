@@ -22,7 +22,7 @@ export default class Main extends React.Component {
                         <div className='gif-container'/>
                         <div className='inner-left'/>
                         <div className='inner-right'/>
-                        <h1>Jacques & Grace</h1>
+                        <h1>Grace Line & Jacques-Arnaud</h1>
                         <div className='bottom-section-wrap'>
                             <h3>Notre mariage</h3>
                             <p>

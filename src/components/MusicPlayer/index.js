@@ -65,7 +65,7 @@ export class MusicPlayer extends React.Component {
   }
 
   componentDidMount() {
-    const {loadPlaylist, playlist} = this.context;
+    const {playlist} = this.context;
     if(playlist.length > 0) {
         this.playAction();
         toast.success('Lecture automatique en cours', {
@@ -80,29 +80,26 @@ export class MusicPlayer extends React.Component {
 
     return (
       <div className='music-player'>
-          {/* blue: #108fa0,
-          orange: #f7792f
-          white: f6ede8 */}
-        {/* <div className='progress-bar'
+        <div className='progress-bar'
              style={{
                 color: 'black',
                 backgroundColor: 'orange',
-                height: '10px',
-                width: '200px',
+                height: '0',
+                width: '0',
                 borderRadius: '5px',
                 transition: 'all .2s',
-                position: 'relative'
+                position: 'relative',
             }}
         >
             <div className='progress-bar-inner'
                 style={{
-                    height: '100%',
+                    height: '0',
                     position: 'absolute',
                     backgroundColor: 'yellow',
-                    width: this.state.progress + '%'
+                    width: this.state.progress + '%',
                 }}
             />
-        </div> */}
+        </div>
         {/* <ButtonsBar
           playlistPosition={position}
           playlistTotal={this.props.playlists.length}

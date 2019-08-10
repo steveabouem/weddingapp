@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class TopNav extends React.Component {
+export class TopNav extends React.Component {
     render() {
         const {additionalClassName, navStyle, displayHomeLink} = this.props;
         return (

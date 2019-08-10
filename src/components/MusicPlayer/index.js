@@ -9,118 +9,121 @@ export class MusicPlayer extends React.Component {
 
     this.state = {
       isPlaying: false,
-      position: 0,
+      isCollapsed: true,
+      track: 0,
       duration: 0,
-      currentTime: 0
+      currentTime: 0,
+      isAutoPlayModalOpen: true
     }
 
-    this.onTimer = this.onTimer.bind(this);
-    this.onPlaying = this.onPlaying.bind(this);
-    this.onPause = this.onPause.bind(this);
-    this.playAction = this.playAction.bind(this);
-    this.pauseAction = this.pauseAction.bind(this);
-    this.prevAction = this.prevAction.bind(this);
-    this.nextAction = this.nextAction.bind(this);
+    this.renderCurrentTime = this.renderCurrentTime.bind(this);
+    this.setPlayState = this.setPlayState.bind(this);
+    this.setPauseState = this.setPauseState.bind(this);
+    this.playAudio = this.playAudio.bind(this);
+    this.pauseAudio = this.pauseAudio.bind(this);
+    this.prevTrack = this.prevTrack.bind(this);
+    this.nextTrack = this.nextTrack.bind(this);
+    this.togglePlayer = this.togglePlayer.bind(this);
   }
 
-  nextAction() {
+  togglePlayer() {
     this.setState({
-      position: this.state.position + 1,
-      isPlaying: false,
-      duration: 0,
-      currentTime: 0
+      isCollapsed: !this.state.isCollapsed
     });
   }
 
-  prevAction() {
+  async nextTrack() {
+    if(this.audio) {
+      await this.setState({
+        track: this.state.track + 1,
+        isPlaying: false,
+        duration: 0,
+        currentTime: 0
+      });
+      this.playAudio();
+    }
+  }
+
+  async prevTrack() {
+    if(this.audio) {
+     await this.setState({
+        track: this.state.track - 1,
+        isPlaying: false,
+        duration: 0,
+        currentTime: 0
+      });
+      this.playAudio()
+    }
+  }
+
+  pauseAudio() {
+    if (this.audio) {
+      this.audio.pause();
+    }
+  }
+
+  playAudio() {
+      this.audio.play()
+      .then( () => {
+        toast.info('Lecture automatique en cours', {
+            position:'bottom-right'
+        });
+      });
+  }
+
+  renderCurrentTime() {
     this.setState({
-      position: this.state.position - 1,
-      isPlaying: false,
-      duration: 0,
-      currentTime: 0
+      currentTime: this.audio ? this.audio.currentTime : 0,
+      progress: this.audio ? this.audio.currentTime * 100 / this.audio.duration : 0
     });
   }
 
-  pauseAction() {
-    this.audio.pause();
-  }
-
-  playAction() {
-    this.audio.play();
-  }
-
-  onTimer() {
-    this.setState({
-      currentTime: this.audio.currentTime,
-      progress: this.audio.currentTime * 100 / this.audio.duration
-    });
-  }
-
-  onPlaying() {
+  setPlayState() {
     this.setState({ isPlaying: true });
   }
 
-  onPause() {
+  setPauseState() {
     this.setState({ isPlaying: false });
   }
 
-  componentDidMount() {
-    const {playlist} = this.context;
-    if(playlist.length > 0) {
-        this.playAction();
-        toast.success('Lecture automatique en cours', {
-            position:'bottom-right'
-        });
-    }
-  }
 
   render() {
     const {playlist} = this.context;
-    const { position } = this.state;
+    const {track, isCollapsed, isPlaying} = this.state;
 
-    return (
+    return isCollapsed ? (
+      <span className='material-icons collapsed-player' onClick={this.togglePlayer}>play_arrow</span>
+    )
+      :
+    (
       <div className='music-player'>
-        <div className='progress-bar'
-             style={{
-                color: 'black',
-                backgroundColor: 'orange',
-                height: '0',
-                width: '0',
-                borderRadius: '5px',
-                transition: 'all .2s',
-                position: 'relative',
-            }}
-        >
-            <div className='progress-bar-inner'
-                style={{
-                    height: '0',
-                    position: 'absolute',
-                    backgroundColor: 'yellow',
-                    width: this.state.progress + '%',
-                }}
-            />
+        <span className='material-icons hide-player' onClick={this.togglePlayer}>close</span>
+        <div className='top'>
+          <div className='track-info'>
+            {playlist[track] ? `${playlist[track].title}` : '...'}
+          </div>
         </div>
-        {/* <ButtonsBar
-          playlistPosition={position}
-          playlistTotal={this.props.playlists.length}
-          prevAction={this.prevAction}
-          nextAction={this.nextAction}
-          playAction={this.playAction}
-          pauseAction={this.pauseAction}
-          isPlaying={this.state.isPlaying}
-        /> */}
-
+        <div className='bottom'>
+          <div className='controls'>
+            <span className='material-icons' onClick={this.prevTrack}>skip_previous</span>
+            <span className='material-icons' onClick={!isPlaying ? this.playAudio : this.pauseAudio}>{!isPlaying ? 'play_arrow' : 'pause'}</span>
+            <span className='material-icons' onClick={this.nextTrack}>skip_next</span>
+          </div>
+          <div className='progress-bar'>
+            <div className='progress-bar-inner' style={{width: this.state.progress + '%'}}/>
+          </div>
+        </div>
         <audio
           ref={audio => (this.audio = audio)}
-          src={playlist.length > 0 ? playlist[position].mp3 : ''}
-          onTimeUpdate={this.onTimer}
-          onPlaying={this.onPlaying}
-          onPause={this.onPause}
+          onTimeUpdate={this.renderCurrentTime}
+          onPlaying={this.setPlayState}
+          onPause={this.setPauseState}
+          src={playlist.length > 0 ? playlist[track].mp3  : ''} type='audio/mp3'
           onLoadedMetadata={this.setState(prevState => {
             if(prevState.duration !== this.state.duration) {
-                return {duration: this.duration}
+              return {duration: this.duration}
             }
-        })}
+          })}
         />
       </div>
     );

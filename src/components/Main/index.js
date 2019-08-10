@@ -1,6 +1,6 @@
 import React from 'react';
 import {FirebaseContext} from '../Context'
-import TopNav from '../Menus/TopNav';
+import {TopNav} from '../Menus/TopNav';
 import {Container} from '../Sections';
 import {Countdown} from '../Countdown';
 import RSVPForm from './RSVPForm';
@@ -14,6 +14,7 @@ export default class Main extends React.Component {
     render() {
         return (
             <div className='gla_page'>
+                    <MusicPlayer />
                     <TopNav />
                     <Container
                         additionalClass='text-center'
@@ -39,7 +40,6 @@ export default class Main extends React.Component {
                         <div className='gif-container'>
                             <div className='animated-div our-wedding' />
                         </div>
-                        <MusicPlayer />
                         <div className='bottom-section-wrap'>
                             <h3>Notre histoire</h3>
                             <p>

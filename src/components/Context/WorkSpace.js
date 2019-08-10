@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 import Main from '../Main';
-import GuestList from '../GuestList';
+import {AdminWorkSpace} from '../Admin';
 import Login from '../Admin/Login';
 import {AdminContext, FirebaseContext} from '../Context';
 import { toast } from 'react-toastify';
@@ -76,13 +76,21 @@ export default class WorkSpace extends React.Component {
                 }, 
                 {data: {'userInfo': userInfo}}
             )
-            .then( () => {
-                toast.warn('Votre soumission a été envoyée!', {
-                    position: 'bottom-right'
-                  });
+            .then( ({data}) => {
+                if(data.code === 400) {
+                    toast.error(data.error, {
+                        position: 'bottom-right'
+                    });
+                } else {
+                    toast.info('Votre soumission a été envoyée!', {
+                        position: 'bottom-right'
+                    });
+                }
             })
-            .catch( error => {
-                console.log(error);
+            .catch( () => {
+                toast.error('Une erreur sèest produite lors de la soumission. SVP contactez l\'administrateur!', {
+                    position: 'bottom-right'
+                });
             });
         };
 
@@ -141,7 +149,7 @@ export default class WorkSpace extends React.Component {
                 {
                     artistName: 'Major',
                     title: 'Why I love you',
-                    mp3: bucketURl + 'why_i_love_you'
+                    mp3: bucketURl + 'why_i_love_you.mp3'
                 }
             ],
             guestSelected: null
@@ -178,7 +186,7 @@ export default class WorkSpace extends React.Component {
                     <Switch>
                         <Route exact path = '/' component={Main}/>
                         <Route path = '/administrateur' component={Login}/>
-                        <Route path = '/invites' component={GuestList}/>
+                        <Route path = '/invites' component={AdminWorkSpace}/>
                     </Switch>
                 </Router>
             </FirebaseContext.Provider>

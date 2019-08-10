@@ -5,6 +5,19 @@ import * as Yup from 'yup';
 import {Container} from '../Sections';
 
 export default class RSVPForm extends React.Component {
+    constructor() {
+        super();
+
+        this.renderErrorMsg = this.renderErrorMsg.bind(this);
+    }
+
+    renderErrorMsg(errorsList, touched) {
+        let total = Object.keys(errorsList).length;
+        if(total > 0) {
+            return <div className='form-error'>{total} champs vides ou invalides dans le formulaire. Notez que tous les champs sont obligatoires</div>
+        }
+    }
+
     render() {
         const {submitRSVP} = this.context;
         const validation = Yup.object().shape({
@@ -39,29 +52,25 @@ export default class RSVPForm extends React.Component {
                             <React.Fragment>
                                 <div className='field-wrap'>
                                     <label>Prénom</label>
-                                    {errors.firstName && touched.firstName && <div className='form-error'>{errors.firstName}</div>}
                                     <Field name='firstName' />
                                 </div>
                                 <div className='field-wrap'>
                                     <label>Nom de famille</label>
-                                    {errors.lastName && touched.lastName && <div className='form-error'>{errors.lastName}</div>}
                                     <Field name='lastName' />
                                 </div>
                                 <div className='field-wrap'>
                                     <label>Email</label>
-                                    {errors.email && touched.email && <div className='form-error'>{errors.email}</div>}
                                     <Field name='email' />
                                 </div>
                                 <div className='field-wrap'>
                                     <label>Cellulaire</label>
-                                    {errors.number && touched.number && <div className='form-error'>{errors.number}</div>}
                                     <Field name='number' />
                                 </div>
                                 <div className='field-wrap'>
                                     <label>Code secret</label>
-                                    {errors.code && touched.code && <div className='form-error'>{errors.code}</div>}
                                     <Field name='code' />
                                 </div>
+                                {this.renderErrorMsg(errors, touched)}
                                 <div className='submit-button' onClick={submitForm}>SOUMETTRE</div>
                             </React.Fragment>
                         )}

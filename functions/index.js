@@ -109,13 +109,22 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                             },
                         ]
                     };
-                    sgMail.send(body);
+                    sgMail.send(body)
+                    .catch(e => {
+                        console.log('sendgrid error: ', e);
+                    });
             })
             .then( () => {
-                guestList.doc(userInfo.uid).set(userInfo);
-                res.send({
-                    code: 200,
-                    data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
+                guestList.doc(userInfo.uid).set(userInfo)
+                .then(r => {
+                    console.log('setting user in db', r);
+                    res.send({
+                        code: 200,
+                        data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
+                    });
+                })
+                .catch(e => {
+                    console.log('error setting userfinfo in db:', e);
                 });
             })
             .catch(
@@ -153,19 +162,27 @@ exports.confirmGuest = functions.https.onRequest((req, res) => {
 
 exports.removeGuest = functions.https.onRequest((req, res) => {
     cors( req, res, () => {
-        let userInfo = req.body.userInfo;
+        let uid = req.body.uid,
+        list =[];
 
-        guestList.doc(userInfo.uid).delete()
-        .then( response => {
-            res.send({
-                code: 200,
-                response
-            });
+        guestList.doc(uid).delete()
+        .then( () => {
+            guestList.get()
+            .then( snapshot => {
+                snapshot.forEach(doc => {
+                    let guest = doc.data();
+                    list.push({...guest, code:'*******************'});
+                });
+                res.send({
+                    code: 200,
+                    list
+                });
+            })
         })
         .catch( error => {
+            console.log(error);
             res.send({
-                code: 500,
-                error
+                code: 500
             });
         });
     });

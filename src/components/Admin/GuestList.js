@@ -33,7 +33,7 @@ export class GuestList extends React.Component {
 
 
     render() {
-        const {addNewGuest, removeGuest, selectGuest, guestSelected, guestList} = this.context;
+        const {addNewGuest, selectGuest, guestSelected, guestList} = this.context;
 
         return(
             <React.Fragment>

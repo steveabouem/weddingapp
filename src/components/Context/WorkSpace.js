@@ -8,6 +8,8 @@ import Login from '../Admin/Login';
 import {AdminContext, FirebaseContext} from '../Context';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import audio1 from '../../assets/audio/mad_over_you.mp3'
+import audio2 from '../../assets/audio/why_i_love_you.mp3'
 
 export default class WorkSpace extends React.Component {
     constructor() {
@@ -16,20 +18,23 @@ export default class WorkSpace extends React.Component {
         toast.configure()
 
         // api calls
-        this.loginAdmin = (entry) => {
+        this.loginAdmin = (entry, props) => {
             axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/loginAdmin', 
                 {headers: 
                 { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
                 'content-type': 'application/json' }
                 }, 
-                {data: entry}
+                {data:{entry}}
             )
-            .then( response => {
-                console.log(response);
-                
+            .then( ({data}) => {
+                if(data.code !== 400) {
+                    props.history.push('/invites');
+                } else {
+                    toast.error('Mot de passe invalide', {position: 'bottom-right'});
+                }
             })
-            .catch( error => {
-                console.log(error);
+            .catch( () => {
+                toast.error('Erreur inconue, contactez l\'administrateur.', {position: 'bottom-right'});
             });
         };
         
@@ -100,7 +105,7 @@ export default class WorkSpace extends React.Component {
                 { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
                 'content-type': 'application/json' }
                 }, 
-                {data: uid}
+                {data: {uid}}
             )
             .then( response => {
                 console.log(response);
@@ -110,8 +115,22 @@ export default class WorkSpace extends React.Component {
             })
         };
 
-        this.removeGuest = (action) => {
-
+        this.removeGuest = (uid, callBack) => {
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/removeGuest', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                'content-type': 'application/json' }
+                }, 
+                {data: {uid}}
+            )
+            .then( ({data}) => {
+                toast.info('Invitation annulée', {position: 'bottom-right'});
+                callBack();
+                this.setState({guestList: data.list})
+            })
+            .catch( () => {
+                toast.error('Une erreur est survenue, aviser Steve', {position: 'bottom-right'});
+            });
         };
 
         this.sendEmailInvite = (content) => {
@@ -144,12 +163,12 @@ export default class WorkSpace extends React.Component {
                 {
                     artistName: 'Runtown',
                     title: 'Mad over you',
-                    mp3: bucketURl + 'mad_over_you'
+                    mp3: audio1
                 },
                 {
                     artistName: 'Major',
                     title: 'Why I love you',
-                    mp3: bucketURl + 'why_i_love_you.mp3'
+                    mp3: audio2
                 }
             ],
             guestSelected: null
@@ -195,5 +214,3 @@ export default class WorkSpace extends React.Component {
 }
 
 WorkSpace.contextType = AdminContext;
-
-const bucketURl = 'https://storage.cloud.google.com/wedding_playlist/';

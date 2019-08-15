@@ -1,6 +1,7 @@
 import React from 'react';
 import {Container} from '../Sections'
 import {Field, Formik} from 'formik';
+import {FirebaseContext} from '../Context';
 import * as Yup from 'yup';
 
 export default class Login extends React.Component {
@@ -15,8 +16,9 @@ export default class Login extends React.Component {
         this.back = this.back.bind(this);
     }
 
-    submit(values) {
-        this.props.history.push('/invites');
+    submit({code}) {
+        console.log(code);
+        this.context.loginAdmin(code, this.props)
     }
 
     back() {
@@ -59,3 +61,5 @@ export default class Login extends React.Component {
         );
     }
 }
+
+Login.contextType = FirebaseContext;

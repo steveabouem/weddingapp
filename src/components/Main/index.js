@@ -4,9 +4,16 @@ import {TopNav} from '../Menus/TopNav';
 import {Container} from '../Sections';
 import {Countdown} from '../Countdown';
 import RSVPForm from './RSVPForm';
+import {BottomSection} from './BottomSection';
 import {MusicPlayer} from '../MusicPlayer';
 
 export default class Main extends React.Component {
+    constructor() {
+        super();
+
+        this.scrollNextSection = this.scrollNextSection.bind(this);
+    }
+
     scrollNextSection() {
         console.log('scroll');
     }
@@ -24,12 +31,11 @@ export default class Main extends React.Component {
                         <div className='inner-left'/>
                         <div className='inner-right'/>
                         <h1>Grace Line & Jacques-Arnaud</h1>
-                        <div className='bottom-section-wrap'>
-                            <h3>Notre mariage</h3>
+                        <BottomSection title='Notre mariage' expands>
                             <p>
                                 Etiam fringilla enim at mollis pulvinar. Aliquam congue commodo ornare. Mauris interdum, ipsum in condimentum sagittis, lectus neque mollis nulla, vitae pharetra eros velit sit amet ex. 
                             </p>
-                        </div>
+                        </BottomSection	>
                     </Container>
                     <Container 
                         id='main-page'
@@ -40,14 +46,13 @@ export default class Main extends React.Component {
                         <div className='gif-container'>
                             <div className='animated-div our-wedding' />
                         </div>
-                        <div className='bottom-section-wrap'>
-                            <h3>Notre histoire</h3>
+                        <BottomSection title='Notre histoire' expands>
                             <p>
                                 Etiam fringilla enim at mollis pulvinar. Aliquam congue commodo ornare. Mauris interdum, ipsum in condimentum sagittis, 
                                 lectus neque mollis nulla, vitae pharetra eros velit sit amet ex. Praesent mollis convallis libero vitae mattis.
                                 Integer consectetur hendrerit neque. Vestibulum iaculis neque et rutrum egestas. Fusce augue leo, 
                             </p>
-                        </div>
+                        </BottomSection>
                     </Container>
                     <Container additionalClass='text-center' id='main-countdown'>
                         <Countdown />
@@ -56,8 +61,7 @@ export default class Main extends React.Component {
                         <div className='gif-container'>
                             <div className='animated-div wedding-details' />
                         </div>
-                        <div className='bottom-section-wrap'>
-                            <h3>Détails de la cérémonie</h3>
+                        <BottomSection title='Détails de la cérémonie' expands>
                             <p>
                                 My fiancé proposed on the Fourth of July. My mother asked us to go to the backyard to get
                                 some chairs and he took me by the shed where we could see all of the fireworks. 
@@ -65,9 +69,9 @@ export default class Main extends React.Component {
                                 He was shaking a little. The proposal was a little silly but perfect, just like him." 
                                 — Jeska Cords
                             </p>
-                        </div>
+                        </BottomSection>
                     </Container>
-                    <RSVPForm />
+                    <RSVPForm hasCodeField />
                     <Container id='thank-you-bottom'>
                         <div className='gif-container'>
                             <div className='animated-div thank-you' />

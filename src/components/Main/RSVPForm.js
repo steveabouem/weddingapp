@@ -9,6 +9,19 @@ export default class RSVPForm extends React.Component {
         super();
 
         this.renderErrorMsg = this.renderErrorMsg.bind(this);
+        this.formatRSVP = this.formatRSVP.bind(this);
+    }
+
+    formatRSVP(values, action){
+        
+        const {referer, callback, hasCodeField} = this.props;
+
+        if (!hasCodeField) {
+            values.code = 'admin';
+        }
+
+        this.context.submitRSVP(values, referer, callback);
+        action.resetForm();
     }
 
     renderErrorMsg(errorsList, touched) {
@@ -19,7 +32,7 @@ export default class RSVPForm extends React.Component {
     }
 
     render() {
-        const {submitRSVP} = this.context;
+        const {hasCodeField, closeAction} = this.props;
         const validation = Yup.object().shape({
             firstName: Yup.string()
                 .min(2, 'Le prénom devrait avoir au moins deux(2) lettres:(')
@@ -33,22 +46,29 @@ export default class RSVPForm extends React.Component {
             email: Yup.string()
                 .email('Prière d\'insérer une addresse email valide')
                 .required('Une addresse email est nécessaire pour vous inscrire!'),
-            code: Yup.string()
-                .required('Vous devez obligatoirement fournir le code d\'invitation!')
+            code: (hasCodeField ? (
+                    Yup.string()
+                       .required('Vous devez obligatoirement fournir le code d\'invitation!')
+            ) : null)
         });
         
         return (
             <Container id='rsvp-wrap'>
-                 <div className='gif-container' style={{top: '0', height: '150px'}}>
-                    <div className='animated-div rsvp-form' />
-                </div>
+                {/* {hasCodeField && */}
+                    <div className='gif-container' style={{top: '0', height: '150px'}}>
+                        <div className='animated-div rsvp-form' />
+                    </div>
+                {/* } */}
+                {closeAction && 
+                    <span className='material-icons add-guest-button default' onClick={closeAction}>close</span>
+                }
                 <div className='form-wrap rsvp'>
                     <Formik 
                         initialValues = {{firstName: '', lastName: '', email: '', number: '', code: '', uid: ''}}
                         validationSchema = {validation}
-                        onSubmit={values => submitRSVP(values)}
+                        onSubmit={(values, reset) => this.formatRSVP(values, reset)}
                     >
-                        {({errors, touched, submitForm}) => (
+                        {({errors, touched, submitForm, resetForm, values}) => (
                             <React.Fragment>
                                 <div className='field-wrap'>
                                     <label>Prénom</label>
@@ -66,12 +86,14 @@ export default class RSVPForm extends React.Component {
                                     <label>Cellulaire</label>
                                     <Field name='number' />
                                 </div>
-                                <div className='field-wrap'>
+                                <div className='field-wrap' style={{opacity: !hasCodeField ? '0' : '1'}}>
                                     <label>Code secret</label>
-                                    <Field name='code' />
+                                    <Field name='code' value={!hasCodeField ? 'admin' : ''} render ={ ({form})  => (
+                                        <input onChange={ e => form.setFieldValue('code', e.target.value)} />
+                                    )}/>
                                 </div>
                                 {this.renderErrorMsg(errors, touched)}
-                                <div className='submit-button' onClick={submitForm}>SOUMETTRE</div>
+                                <div className='submit-button' onClick={() => submitForm(values, resetForm)}>SOUMETTRE</div>
                             </React.Fragment>
                         )}
                     </Formik>

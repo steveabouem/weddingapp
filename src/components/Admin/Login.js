@@ -17,7 +17,6 @@ export default class Login extends React.Component {
     }
 
     submit({code}) {
-        console.log(code);
         this.context.loginAdmin(code, this.props)
     }
 

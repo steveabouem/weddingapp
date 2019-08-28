@@ -8,6 +8,7 @@ export class MusicPlayer extends React.Component {
     super(props);
 
     this.state = {
+      ready: false,
       isPlaying: false,
       isCollapsed: true,
       track: 0,
@@ -24,11 +25,22 @@ export class MusicPlayer extends React.Component {
     this.prevTrack = this.prevTrack.bind(this);
     this.nextTrack = this.nextTrack.bind(this);
     this.togglePlayer = this.togglePlayer.bind(this);
+    this.setToReady = this.setToReady.bind(this);
   }
 
   togglePlayer() {
     this.setState({
       isCollapsed: !this.state.isCollapsed
+    });
+  }
+
+  setToReady() {
+    // audio can only be played if state property ready is set to true and 
+    // the DOM has rendered the audio ref
+    this.setState(prevState => {
+      if(!prevState.ready) {
+        return {ready: true, isAutoPlayModalOpen: true};
+      }
     });
   }
 
@@ -40,12 +52,11 @@ export class MusicPlayer extends React.Component {
         track: track + 1,
         isPlaying: false,
         duration: 0,
-        currentTime: 0
+        currentTime: 0,
       });
       this.playAudio();
     } else {
       console.log("Last song:(");
-      
     }
   }
 
@@ -70,51 +81,57 @@ export class MusicPlayer extends React.Component {
   }
 
   playAudio() {
-      this.audio.play()
-      .then( () => {
-        toast.info('Lecture automatique en cours', {
-            position:'bottom-right'
-        });
-      })
-      .catch( () => {
-        this.setState({playbackError: true});
-        toast.error('Le lecteur audio est indisponible.', {
-          position:'bottom-right'
-      });
-      });
+    if(this.audio && this.state.ready) {
+      this.audio.play();
+    }    
   }
 
   renderCurrentTime() {
     this.setState({
       currentTime: this.audio ? this.audio.currentTime : 0,
-      progress: this.audio ? this.audio.currentTime * 100 / this.audio.duration : 0
+      progress: this.audio ? this.audio.currentTime * 100 / this.audio.duration : 0,
     });
   }
 
   setPlayState() {
-    this.setState({ isPlaying: true });
+    this.setState({ isPlaying: true});
   }
 
   setPauseState() {
-    this.setState({ isPlaying: false });
-  }
-
-  componentDidMount() {
-    if(this.audio) {
-      this.playAudio()
-    }
+    this.setState({ isPlaying: false});
   }
 
   render() {
     const {playlist} = this.context;
-    const {track, isCollapsed, isPlaying, playbackError} = this.state;
+    const {track, isCollapsed, isPlaying, playbackError, isAutoPlayModalOpen} = this.state;
 
     return (
       <React.Fragment>
+        {isAutoPlayModalOpen && (
+          <div className='admin-modal music'>
+              <div 
+                  className='material-icons close' 
+                  onClick={this.toggleModal}
+              >
+                  close
+              </div>
+              <ul>
+                <li>Musique?</li>
+                <li className='modal-buttons'>
+                    <span onClick={() => this.setState({isAutoPlayModalOpen: false})}>NON</span>
+                    <span onClick={() => 
+                      {this.playAudio(); this.setState({isAutoPlayModalOpen:false});
+                    }}>
+                      OUI
+                    </span>
+                </li>
+              </ul>
+          </div>
+        )}
         {isCollapsed && (
           <span className='material-icons collapsed-player' onClick={this.togglePlayer}>play_arrow</span>
         )}
-        <div className='music-player' style={{opacity: isCollapsed ? '0' : '1'}}>
+        <div className='music-player' style={{opacity: (isCollapsed ? '0' : '1'), zIndex: (isCollapsed ? 'initial' : '15')}}>
           <span className='material-icons hide-player' onClick={this.togglePlayer}>close</span>
           <div className='top'>
             <div className='track-info'>
@@ -136,6 +153,9 @@ export class MusicPlayer extends React.Component {
             onTimeUpdate={this.renderCurrentTime}
             onPlaying={this.setPlayState}
             onPause={this.setPauseState}
+            preload
+            // set state to ready once the audio has been loaded
+            onLoadedData={this.setToReady}
             src={playlist.length > 0 ? playlist[track].mp3  : ''} type='audio/mp3'
             onLoadedMetadata={this.setState(prevState => {
               if(prevState.duration !== this.state.duration) {

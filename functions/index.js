@@ -1,6 +1,5 @@
 
 const admin = require('firebase-admin');
-var {Storage} = require('@google-cloud/storage');
 const functions = require('firebase-functions');
 const env = functions.config();
 const cors = require('cors')({origin: true});
@@ -8,8 +7,6 @@ const sgMail = require('@sendgrid/mail');
 const image2base64 = require('image-to-base64');
 sgMail.setApiKey(env.sendgrid_api.key);
 admin.initializeApp(functions.config().firebase);
-const storage = new Storage();
-const playlistRef = storage.bucket('gs://our-wedding-55849.appspot.com/wedding_playlist');
 const db = admin.firestore();
 const guestList = db.collection('guests');
 var uid = (length) => {
@@ -26,7 +23,6 @@ var uid = (length) => {
 // I - ADMIN AUTH
 // II - ADMIN OPERATIONS ( Updates, uploads, sms, etc... )
 // III - GUEST MANAGEMENT
-// IV - MUSIC PLAYLIST
 // ==========*==========
 
 // ==========ADMIN AUTH==========
@@ -42,11 +38,6 @@ exports.loginAdmin = functions.https.onRequest((req, res) => {
 // ==========end ADMIN AUTH==========
 
 // ==========ADMIN OPS============
-exports.sendSms = functions.https.onRequest((req, res) => {
-    cors(req, res, () => {
-        console.log('lets go');
-    });
-});
 
 exports.sendEmail = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
@@ -90,12 +81,13 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
         // dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
 
         userInfo.uid = uid(16);
-        if(code === env.invitation_code.key) {
+        if((code === env.invitation_code.key || code === 'admin') && !userInfo.referer) {
             image2base64(src)
             .then(
                 (response) => {
                     let body = {
                         to: email,
+                        cc: (userInfo.referer ? {email: userInfo.referer.email} : null),
                         subject: `Invitation électronique pour ${lastName} ${firstName}`,
                         from: {name: 'Jacques Arnaud & Grace Lyne', email: 'ourwedding@now.com'},
                         content: [{type: 'text/html', value: `<strong>Bonjour ${firstName}! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>`}],
@@ -109,6 +101,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                             },
                         ]
                     };
+
                     sgMail.send(body)
                     .catch(e => {
                         console.log('sendgrid error: ', e);
@@ -117,7 +110,6 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
             .then( () => {
                 guestList.doc(userInfo.uid).set(userInfo)
                 .then(r => {
-                    console.log('setting user in db', r);
                     res.send({
                         code: 200,
                         data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
@@ -131,10 +123,15 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                 (error) => {
                 console.log('base64', error);
             });
+
+            if(userInfo.referer) {
+                guestList.doc(userInfo.referer.uid).update({plus_one: userInfo.uid});
+                guestList.doc(userInfo.uid).update({referer_uid: userInfo.referer.uid});
+            }
         } else {
             res.send({
                 code: 400,
-                error: 'Code secret invalide'
+                error: 'Code secret invalide, ou utilisateur non autorisé'
             });
         }
     });
@@ -188,6 +185,29 @@ exports.removeGuest = functions.https.onRequest((req, res) => {
     });
 });
 
+exports.editGuest = functions.https.onRequest((req,res) => {
+    cors(req, res, () => {
+        let uid = req.body.uid,
+        updates = req.body.updates,
+        user = guestList.doc(uid);
+
+        user.set({
+            updates
+        })
+        .then( r => {
+            res.send({
+                code: 200,
+                update: r
+            });
+        })
+        .catch( e => {
+            console.log(e);
+            res.send({
+                code: 500
+            });
+        })
+    });
+});
 
 exports.loadGuestList = functions.https.onRequest((req, res) => {
     cors( req, res, () => {
@@ -197,8 +217,6 @@ exports.loadGuestList = functions.https.onRequest((req, res) => {
             snapshot.forEach(doc => {
                 let guest = doc.data();
                 list.push({...guest, code:'*******************'});
-                console.log(doc.data());
-                console.log({list});
             });
         })
         .then(() => {
@@ -218,22 +236,3 @@ exports.loadGuestList = functions.https.onRequest((req, res) => {
 });
 
 // ==========end GUEST MANAGEMENT==========
-
-// ==========MUSIC PLAYLIST==========
-exports.loadPlaylist = functions.https.onRequest((req, res) => {
-    cors( req, res, () => {
-        playlistRef.getFiles()
-        .then(playlist => {
-            res.send({
-                playlist
-            });
-        })
-        .catch(error => {
-            res.send({
-                error
-            });
-        });
-    });
-});
-// ==========end PLAYLIST==========
-

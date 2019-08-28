@@ -1,8 +1,9 @@
 import React from 'react';
 import FlipClock from 'x-react-flipclock';
+import {BottomSection} from '../Main/BottomSection';
 
-export const Countdown =() => (
-    <div className='bottom-section-wrap'>
+export const Countdown = () => (
+    <BottomSection>
         <div className='gif-container'>
             <div className=' animated-div countdown-gif' />
         </div>
@@ -35,6 +36,5 @@ export const Countdown =() => (
                 ]}
             />
         </div>
-        {/* </span> */}
-    </div>
+    </BottomSection>
 );

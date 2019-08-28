@@ -13,11 +13,13 @@ export class AdminWorkSpace extends React.Component {
         super(); 
 
         this.state = {
-            isGuestModalOpen: false
+            isGuestModalOpen: false,
+            enlargeModal: false
         };
 
         this.renderGuestInfo = this.renderGuestInfo.bind(this);
         this.toggleModal= this.toggleModal.bind(this);
+        this.shouldEnlargeModal= this.shouldEnlargeModal.bind(this);
     }
 
     renderGuestInfo(uid) {
@@ -30,20 +32,29 @@ export class AdminWorkSpace extends React.Component {
         this.setState({isGuestModalOpen: !this.state.isGuestModalOpen});
     }
 
+    async shouldEnlargeModal(bool) {
+        this.setState({enlargeModal: bool});
+    }
+
     render() {
-        const {isGuestModalOpen, currentGuest} = this.state;
+        const {isGuestModalOpen, currentGuest, enlargeModal} = this.state;
 
         return (
             <React.Fragment>
                 {isGuestModalOpen && (
-                    <div className='admin-modal'>
+                    <div className={'admin-modal' + (enlargeModal ? ' enlarged' : '')}>
                         <div 
                             className='material-icons close' 
                             onClick={this.toggleModal}
                         >
                             close
                         </div>
-                        <Modal currentGuest={currentGuest} isOpen={isGuestModalOpen} toggleModal={this.toggleModal} />
+                        <Modal 
+                            currentGuest={currentGuest}
+                            isOpen={isGuestModalOpen} 
+                            toggleModal={this.toggleModal}
+                            shouldEnlargeModal={this.shouldEnlargeModal} 
+                        />
                     </div>
                 )}
                 <TopNav displayHomeLink additionalClassName='admin-nav' navStyle={{background: '#108fa0!important'}}/>

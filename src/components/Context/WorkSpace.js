@@ -47,7 +47,8 @@ export default class WorkSpace extends React.Component {
             )
             .then( res => {
                 this.setState({
-                    guestList: res.data.response
+                    guestList: res.data.response,
+                    guestsLoaded: true
                 });
             })
             .catch( error => {
@@ -55,31 +56,16 @@ export default class WorkSpace extends React.Component {
             });
         };
 
-        this.loadPlaylist = () => {
-            axios.get('https://us-central1-our-wedding-55849.cloudfunctions.net/loadPlaylist', 
-            {headers: 
-            { Authorization: 'Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo',
-            'content-type': 'application/json' }
-            })
-            .then( playlist => {
-                this.setState({playlist});
-            })
-            .catch( () => {
-                toast.error('Lecteur audio non disponible!', {
-                    position: 'bottom-right'
-                });
-            });
-        };
-
-        this.submitRSVP = (userInfo) => {
+        this.submitRSVP = (userInfo, referer, callBack) => {
             userInfo.registered_on = moment();
-
+            userInfo.referer = referer;
+            
             axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/submitRSVP', 
                 {headers: 
                 { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
                 'content-type': 'application/json' }
                 }, 
-                {data: {'userInfo': userInfo}}
+                {data: {userInfo}}
             )
             .then( ({data}) => {
                 if(data.code === 400) {
@@ -87,16 +73,39 @@ export default class WorkSpace extends React.Component {
                         position: 'bottom-right'
                     });
                 } else {
+                    if(callBack) {
+                        callBack();
+                    }
                     toast.info('Votre soumission a été envoyée!', {
                         position: 'bottom-right'
                     });
                 }
             })
             .catch( () => {
-                toast.error('Une erreur sèest produite lors de la soumission. SVP contactez l\'administrateur!', {
+                toast.error('Une erreur s\'est produite lors de la soumission. SVP contactez l\'administrateur!', {
                     position: 'bottom-right'
                 });
             });
+        };
+
+        this.editGuest = (uid, updates) => {
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/editGuest', 
+            {headers: 
+            { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+            'content-type': 'application/json' }
+            }, 
+            {data: {uid, updates}}
+        )
+            .then( response => {
+                toast.success('Information mise à jour!', {
+                    position: 'bottom-right'
+                });
+            })
+            .catch( error => {
+                toast.error('Une erreur sèest produite lors de la soumission. SVP contactez l\'administrateur!', {
+                    position: 'bottom-right'
+                });
+            })
         };
 
         this.confirmGuest = (uid) => {
@@ -107,12 +116,12 @@ export default class WorkSpace extends React.Component {
                 }, 
                 {data: {uid}}
             )
-            .then( response => {
-                console.log(response);
-            })
-            .catch( error => {
-                console.log(error);
-            })
+                .then( response => {
+                    console.log(response);
+                })
+                .catch( error => {
+                    console.log(error);
+                });
         };
 
         this.removeGuest = (uid, callBack) => {
@@ -123,14 +132,16 @@ export default class WorkSpace extends React.Component {
                 }, 
                 {data: {uid}}
             )
-            .then( ({data}) => {
-                toast.info('Invitation annulée', {position: 'bottom-right'});
-                callBack();
-                this.setState({guestList: data.list})
-            })
-            .catch( () => {
-                toast.error('Une erreur est survenue, aviser Steve', {position: 'bottom-right'});
-            });
+                .then( ({data}) => {
+                    toast.info('Invitation annulée', {position: 'bottom-right'});
+                    callBack();
+                    this.setState({guestList: data.list})
+                })
+                .catch( e => {
+                    console.log({e});
+                    
+                    toast.error('Une erreur est survenue, aviser Steve', {position: 'bottom-right'});
+                });
         };
 
         this.sendEmailInvite = (content) => {
@@ -142,23 +153,19 @@ export default class WorkSpace extends React.Component {
             }, 
             {data: {email}}
         )
-        .then( response => {
-            console.log(response);
-        })
-        .catch( error => {
-            console.log(error);
-        })  
+            .then( response => {
+                console.log(response);
+            })
+            .catch( error => {
+                console.log(error);
+            })  
         };
 
-        this.sendSMS = (action) => {
-
-        };
-        
-        this.selectGuest = this.selectGuest.bind(this);
         this.state = {
             hasAdminPrivileges: false,
             rsvpValues: null,
             guestList: null,
+            guestsLoaded: false,
             playlist: [
                 {
                     artistName: 'Runtown',
@@ -171,35 +178,27 @@ export default class WorkSpace extends React.Component {
                     mp3: audio2
                 }
             ],
-            guestSelected: null
         };
 
     }
 
-    selectGuest(guestSelected) {
-        this.setState({guestSelected});
-    }
-
     render() {
-        const {hasAdminPrivileges,rsvpValues, guestSelected, guestList, playlist} = this.state;
+        const {hasAdminPrivileges,rsvpValues, guestList, playlist, guestsLoaded} = this.state;
         return (
             <FirebaseContext.Provider value={{
                 // properties
                 hasAdminPrivileges,
                 rsvpValues,
-                guestSelected,
                 guestList,
+                guestsLoaded,
                 playlist,
-                
                 // mutators
-                selectGuest: this.selectGuest,
                 addNewGuest: this.addNewGuest,
+                editGuest: this.editGuest,
                 removeGuest: this.removeGuest,
-                sendSMS: this.sendSMS,
                 submitRSVP: this.submitRSVP,
                 loginAdmin: this.loginAdmin,
                 loadGuestList: this.loadGuestList,
-                loadPlaylist: this.loadPlaylist
             }}>
                 <Router>
                     <Switch>

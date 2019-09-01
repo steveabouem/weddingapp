@@ -169,7 +169,6 @@ html {
 	background: url('../../../assets/images/lone_sea_he.jpeg') right top no-repeat, url('../../../assets/images/lone_tree_she.jpeg') left top no-repeat;
 	background-size: 50% 90%, 50% 90%;
 	background-position-y: 50%, 30%;
-	/* background-attachment: fixed; */
 }
 
 #intro-section h1 {
@@ -178,7 +177,9 @@ html {
 	font-size: 50px;
     color: white;
     position: relative;
-	bottom: 25%;
+	margin: auto;
+	background: #0000001a;
+    padding: 5px;
 	animation: reveal 1.5s linear;
 }
 
@@ -221,6 +222,8 @@ html {
 	background-image: url('https://images.unsplash.com/photo-1487530811176-3780de880c2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80');
 	background-size: cover;
 	background-attachment: fixed;
+	background-color: #0000001c;
+    background-blend-mode: overlay;
     margin: auto;
     width: 100%;
     display: flex;
@@ -238,6 +241,166 @@ html {
 	padding-top: 6%;
     width: 100%;
     height: 100%;
+}
+
+/* ============PARAGRAPH SECTION GIFS=========== */
+.center-gif {
+	margin: auto;
+    height: 150px;
+    background-size: contain;
+	width: 20%;
+}
+
+.wedding-gif {
+	background-image: url('../images/animations/flowers4.gif'); 
+	background-repeat: no-repeat;
+}
+
+.story-gif {
+	background-image: url('../images/animations/flowers.gif'); 
+	background-repeat: no-repeat;
+}
+
+.details-gif {
+	background-image: url('../images/animations/flowers2.gif'); 
+	background-repeat: no-repeat;
+}
+
+/* ============PARAGRAPH SECTION GIFS END=========== */
+
+.admin-space {
+	display: flex;
+    flex-direction: row;
+    height: 90%;
+    position: relative;
+    width: 100%;
+    justify-content: flex-start;
+    overflow: hidden;
+    padding-top: 5%;
+}
+
+.admin-modal {
+	position: absolute;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+	background: #000000c7;
+	transition: .3s;
+	animation: reveal .5s linear;
+}
+
+.enlarged .field-wrap > input{
+	height: 30px;
+	margin: auto;
+}
+
+.add-guest-button {
+	font-size: 1.5em;
+    color: #23c9df;
+    text-decoration: underline;
+    transition: .3s;
+}
+
+#guest-list-wrap .default, #rsvp-wrap .default {
+	position: absolute;
+    top: 5%;
+    right: 5%;
+    color: #f7792f;
+}
+
+.add-guest-button:hover {
+	transform: translateY(-5px);
+	cursor: pointer;
+}
+
+.music {
+	position: fixed;
+}
+.music ul {
+	position: relative!important;
+	height: 30%!important;
+}
+
+.music li {
+	position: absolute!important;
+    top: 15%!important;
+    width: 70%!important;
+    left: 15%!important;
+}
+
+.music .modal-buttons {
+	position: absolute!important;
+    bottom: 5%!important;
+}
+
+.admin-modal ul {
+	list-style: none;
+    padding: 0;
+    height: 60%;
+    border: 3px solid #23c9df;
+    width: 60%;
+    margin: auto;
+    background: white;
+    border-radius: 5px;
+    margin-top: 10%;
+}
+
+.admin-modal li {
+	padding: 0;
+    width: 90%;
+    height: 10%;
+    margin: auto;
+    text-align: center;
+}
+
+.admin-modal h5 {
+	margin: 2% 0 0 0;
+}
+
+.admin-modal .close {
+	color: #ffb487;
+    font-size: 30px;
+    position: absolute;
+    top: 15%;
+	right: 5%;
+	transition: .3s;
+	cursor: pointer;
+}
+
+.admin-modal .close:hover {
+	font-size: 33px;
+	transform: translateY(-5px);
+}
+
+.admin-modal .modal-buttons {
+	display: flex;
+    justify-content: space-between;
+    padding: 1%;
+    height: 20%;
+	align-items: flex-end;
+	align-items: flex-end;
+}
+
+.admin-modal .gif-container {
+	display: none;
+}
+
+.admin-modal .rsvp {
+	margin: 0;
+}
+
+.modal-buttons span {
+	color: white;
+    text-align: center;
+	background: #f7792f;
+    padding: 5px;
+    border-radius: 5px;
+	border: 1px solid black;
+	transition: all .3s;
+}
+
+.modal-buttons span:hover {
+	background: #ffb487;
 }
 
 .admin-nav {
@@ -353,18 +516,26 @@ html {
 }
 
 .our-wedding {
-	background-image: url('../images/animations/ourwedding_wh.gif');
+	background: url('../images/animations/icons/icon17_wh.gif') left no-repeat, url('../images//animations/icons/icon17_wh.gif') right no-repeat;
 	height: 100%;
+	background-size: 5% 65%;
+	background-position-x: 5%, 95%;
 }
 
 .countdown-gif {
-	background-image: url('../images/animations/savethedate_wh.gif');
+	background: url('../images/animations/icons/icon6_wh.gif') left no-repeat,  url('../images/animations/icons/icon6_wh.gif') right no-repeat;
+	background-size: 5% 65%; 
 	height: 100%;
+	background-position-x: 5%, 95%;
 }
 
 .wedding-details {
-	background-image: url('../images/animations/flowers2.gif');
+	background: url('../images/animations/icons/icon10_wh.gif') left no-repeat, url('../images/animations/icons/icon10_wh.gif') right no-repeat;
 	height: 100%;
+	background-color: #00000024;
+	background-blend-mode: overlay;
+	background-position-x: 5%, 95%;
+	background-size: 5% 65%; 
 }
 
 .flowers-main {
@@ -402,14 +573,95 @@ html {
 }
 
 .flipclock-wrap .FlipClock {
-	transform: scale(1.3);
 	width: 80%;
 	margin: auto;
 	transition: none;
 }
+
+.flipclock-wrap .FlipClock .flipUnitContainer>.upperCard, .flipclock-wrap .FlipClock .flipUnitContainer>.lowerCard {
+	overflow: hidden!important;
+	border: none;
+}
+
+.flipclock-wrap .FlipClock .flipUnitContainer>.flipCard {
+	width: 48px;
+}
+
+.flipclock-wrap .FlipClock .flipUnitContainer>.fold, .flipclock-wrap .FlipClock .flipUnitContainer>.unfold {
+	animation-duration: .1s!important;
+}
 /* ======CONTDOwN END====== */
 
 /* ======MUSIC PLAYER====== */
+.music-player {
+	position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 15%;
+    z-index: 15;
+    border-radius: 5px;
+    display: flex;
+    background-color: #f7792f;
+    flex-direction: column;
+    align-items: flex-end;
+	padding: 5px;
+	color: white;
+	animation: reveal .3s linear;
+}
+
+.music-player .top {
+	width: 100%;
+    padding: 5px;
+	vertical-align: text-bottom;
+	
+}
+
+.music-player .bottom {
+	width: 100%
+}
+
+.track-info {
+	text-align: center;
+}
+
+.hide-player {
+	font-size: 1em;
+    cursor: pointer;
+    margin: 4px 0;
+}
+
+.collapsed-player {
+	bottom: 10px;
+    position: fixed;
+    right: 10px;
+	z-index: 18;
+	opacity: .5;
+	cursor: pointer;
+	font-size: 1.6em;
+	transition: .3s;
+	color: #f7792f;
+	background: white;
+	border: 2px solid black;
+	border-radius: 120px;
+}
+
+.collapsed-player:hover {
+	opacity: 1;
+	font-size: 1.8em;
+	color: #f7792f;
+	border-color: #f7792f;
+}
+
+.controls {
+	width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.controls .material-icons {
+	cursor: pointer;
+}
+
 .progress-bar {
 	color: black;
     background-color: orange;
@@ -883,9 +1135,16 @@ blockquote footer {
 	margin-left: auto;
 }
 .text-center p {
-	max-width: 600px;
-	margin-right: auto;
-	margin-left: auto;
+	width: 50%;
+	margin: auto;
+	padding-bottom: 5%;
+	text-align: center;
+}
+.bottom-line {
+	height: 1%;
+    width: 33%;
+    border-top: 1px solid #f7792f;
+    margin: auto;
 }
 .form-control {
 	margin-bottom: 20px;
@@ -1605,6 +1864,11 @@ label.error{
 	margin-left: auto;
 	margin-right: auto;
 }
+.white {
+	border-top: 50px solid #23c9df;
+	height: 90%;
+	padding: 5%;
+}
 .gla_section_sml_padding .gla_icon_box, 
 .gla_section_sml_padding .gla_anim_box {
 	margin-bottom: 0;
@@ -1623,12 +1887,6 @@ label.error{
 	padding: 50px 0;
 	margin: 0;
 }
-
-.container {
-	position: relative;
-}
-
-
 
 /*===============================================*/
 /* 04. Header                                    */
@@ -2238,7 +2496,9 @@ ul.mega-menu {
 				color: #333;
 			}
 
-
+			.nav-tagline {
+				padding: 1%;
+			}
 		
 			/*04.6 Language Menu*/
 			.gla_header_lang ul {
@@ -2959,14 +3219,10 @@ ul.mega-menu {
 
 /*Gold Numbers*/
 .countdown-amount span {
-	/* background-image: url(../images/gold_numbers_wh.gif); */
 	display: inline-block;
 	height: 150px;
 	-webkit-background-size: cover;
 	background-size: cover;
-}
-.gla_wht_txt .countdown-amount span {
-	/* background-image: url(../images/gold_numbers.gif); */
 }
 .gla_image_day.gla_image0,
 .gla_image_hours.gla_image0,
@@ -3092,32 +3348,26 @@ ul.mega-menu {
 
 
 .gla_slider_flower_ii.gla_slider_flower_c1 {
-	/* background-image: url(../images/flowers_slider/fl2_c1.png); */
 	width: 400px;
 	height: 454px;
 }
 .gla_slider_flower_ii.gla_slider_flower_c2 {
-	/* background-image: url(../images/flowers_slider/fl2_c2.png); */
 	width: 400px;
 	height: 496px;
 }
 .gla_slider_flower_ii.gla_slider_flower_c3 {
-	/* background-image: url(../images/flowers_slider/fl2_c3.png); */
 	width: 400px;
 	height: 365px;
 }
 .gla_slider_flower_ii.gla_slider_flower_c4 {
-	/* background-image: url(../images/flowers_slider/fl2_c4.png); */
 	width: 400px;
 	height: 441px;
 }
 .gla_slider_flower_ii.gla_slider_flower_c5 {
-	/* background-image: url(../images/flowers_slider/fl2_c5.png); */
 	width: 500px;
 	height: 171px;
 }
 .gla_slider_flower_ii.gla_slider_flower_c6 {
-	/* background-image: url(../images/flowers_slider/fl2_c6.png); */
 	width: 500px;
 	height: 199px;
 }
@@ -6536,20 +6786,40 @@ header nav.active .gla_logo {
 		height: 10%!important;
 	}
 
-	#intro-section {
-		background: url('../../../assets/images/lone_sea_he.jpeg');
-		background-attachment: fixed;
-		background-size: cover;
-		background-position-x: 55%;
+	.center-gif {
+		height: 19%;
+		background-size: 90%;
+		width: 55%;
+	}
+
+	.bottom-section-wrap {
+		flex-direction: column;
+	}
+
+	.bottom-section-wrap p {
+		width: 95%;
+		padding-left: 2%; 
+	}
+
+	.bottom-section-wrap h3 {
+		text-align: left;
+		margin: 0;
+	}
+
+	.expand {
+		display: none;
+	}
+
+	.music-player {
+		width: 25%
+	}
+
+	.collapsed-player {
+		opacity: .8;
 	}
 
 	#intro-section h1 {
 		bottom: 6%;
-	}
-
-	#main-page {
-		background: url('../../../assets/images/lone_tree_she.jpeg');
-		background-size: cover;
 	}
 
 	#wedding-details {
@@ -6561,12 +6831,25 @@ header nav.active .gla_logo {
 		background-position-y: 45%;
 	}
 
+	.flipclock-wrap {
+		width: 100%;
+		margin: auto;	
+	}
+
+	.flipclock-wrap .FlipClock {
+		width: 75%;
+	}
+
 	.bottom-section-wrap {
 		height: 40%;
 	}
 
-	.field-wrap {
+	.field-wrap, .form-error, .text-center p {
 		width: 80%;
+	}
+
+	.thank-you {
+		background-size: 20%!important;
 	}
 }
 

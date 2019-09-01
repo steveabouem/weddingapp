@@ -9,6 +9,11 @@ export class TopNav extends React.Component {
                     <div className='container'>
                         <div className='gla_logo_container clearfix'>
                         </div>
+                        {/* <div className='nav-tagline'>
+                            <span>Grace-Line & Jacques-Arnaud</span>
+                            <br/>
+                            <span>Date et heure</span>
+                        </div> */}
                         <div className='gla_default_menu'>
                             <ul>
                                 {displayHomeLink &&
@@ -18,11 +23,11 @@ export class TopNav extends React.Component {
                                         </a>
                                     </li>
                                 }
-                                <li>
+                                {/* <li>
                                     <a href='/administrateur' className='material-icons'>
                                         settings
                                     </a>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                     </div>

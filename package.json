@@ -10,10 +10,13 @@
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
+    "react-audio-player": "^0.11.1",
     "react-dom": "^16.8.6",
+    "react-hot-loader": "^4.12.11",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-toastify": "^5.3.1",
+    "react-tooltip": "^3.11.1",
     "x-react-flipclock": "^0.1.184153",
     "yup": "^0.27.0"
   },

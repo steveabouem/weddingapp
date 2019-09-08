@@ -41,7 +41,7 @@ export class Modal extends React.Component {
             (
                 <ul>
                     {isFormActive ? (
-                            <RSVPForm closeAction={this.toggleForm} referer={currentGuest} callback={this.toggleForm} />
+                        <RSVPForm closeAction={this.toggleForm} referer={currentGuest} callback={this.toggleForm} />
                     )
                         :
                     (
@@ -52,7 +52,7 @@ export class Modal extends React.Component {
                             </li>
                             <li>
                                 <h5>Nom</h5>
-                                <span>{currentGuest.number}</span>
+                                <span>{currentGuest.lastName}</span>
                             </li>
                             <li>
                                 <h5>Email</h5>

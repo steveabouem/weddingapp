@@ -81,20 +81,20 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
         // dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
 
         userInfo.uid = uid(16);
-        if((code === env.invitation_code.key || code === 'admin') && !userInfo.referer) {
+        if((code === env.invitation_code.key || code === 'admin')) {
             image2base64(src)
             .then(
                 (response) => {
                     let body = {
                         to: email,
-                        cc: (userInfo.referer ? {email: userInfo.referer.email} : null),
+                        cc: (userInfo.referer ? {email: userInfo.referer.email} ? userInfo.plus_one : {email: userInfo.plus_one.email} : null),
                         subject: `Invitation électronique pour ${lastName} ${firstName}`,
                         from: {name: 'Jacques Arnaud & Grace Lyne', email: 'ourwedding@now.com'},
                         content: [{type: 'text/html', value: `<strong>Bonjour ${firstName}! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>`}],
                         attachments: [
                             {
                                 content: response,
-                                filename: `Invitation - ${firstName} ${lastName}.jpeg` + (req.body.plusOne ? ` ${req.body.plusOne}` : ''),
+                                filename: `Invitation - ${firstName} ${lastName}.jpeg` + (req.body.plus_one ? ` ${req.body.plus_one}` : ''),
                                 type: 'image/jpeg',
                                 disposition: 'attachment',
                                 contentId: 'eVite'
@@ -110,6 +110,24 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
             .then( () => {
                 guestList.doc(userInfo.uid).set(userInfo)
                 .then(r => {
+                    try {
+
+                        if(userInfo.referer) {
+                            // in case admins added the plus one themselves, from an existing user
+                            guestList.doc(userInfo.referer.uid).update({plus_one: userInfo.uid});
+                            guestList.doc(userInfo.uid).update({referer_uid: userInfo.referer.uid});
+                        }  
+                        
+                        if(userInfo.plus_one) {
+                            // in case guest added their own plus one themselves, as they're registering
+                            let plusOneId = uid(16);
+                            let data = {...userInfo.plus_one, referer: userInfo, uid: plusOneId};
+                            guestList.doc(plusOneId).set(data);
+                        }
+                    } catch(e) {
+                        console.log('error adding guests', e);
+                        
+                    }
                     res.send({
                         code: 200,
                         data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
@@ -123,11 +141,6 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                 (error) => {
                 console.log('base64', error);
             });
-
-            if(userInfo.referer) {
-                guestList.doc(userInfo.referer.uid).update({plus_one: userInfo.uid});
-                guestList.doc(userInfo.uid).update({referer_uid: userInfo.referer.uid});
-            }
         } else {
             res.send({
                 code: 400,

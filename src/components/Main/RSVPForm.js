@@ -8,12 +8,21 @@ export default class RSVPForm extends React.Component {
     constructor() {
         super();
 
+        this.state = {
+            multipleGuests: false,
+            values: {}
+        };
+        
+        this.toggleMultipleGuests = this.toggleMultipleGuests.bind(this);
         this.renderErrorMsg = this.renderErrorMsg.bind(this);
         this.formatRSVP = this.formatRSVP.bind(this);
     }
 
+    toggleMultipleGuests() {
+        this.setState({multipleGuests: !this.state.multipleGuests});
+    }
+
     formatRSVP(values, action){
-        
         const {referer, callback, hasCodeField} = this.props;
 
         if (!hasCodeField) {
@@ -33,6 +42,7 @@ export default class RSVPForm extends React.Component {
 
     render() {
         const {hasCodeField, closeAction} = this.props;
+        const {multipleGuests} = this.state;
         const validation = Yup.object().shape({
             firstName: Yup.string()
                 .min(2, 'Le prénom devrait avoir au moins deux(2) lettres:(')
@@ -62,7 +72,7 @@ export default class RSVPForm extends React.Component {
                 {closeAction && 
                     <span className='material-icons add-guest-button default' onClick={closeAction}>close</span>
                 }
-                <div className='form-wrap rsvp'>
+                <div className={'form-wrap rsvp' + (multipleGuests ? ' multiple' : '')}>
                     <Formik 
                         initialValues = {{firstName: '', lastName: '', email: '', number: '', code: '', uid: ''}}
                         validationSchema = {validation}
@@ -70,6 +80,11 @@ export default class RSVPForm extends React.Component {
                     >
                         {({errors, touched, submitForm, resetForm, values}) => (
                             <React.Fragment>
+                                {/* {!closeAction && 
+                                    <span className='guest-add-guest' onClick={this.toggleMultipleGuests}>
+                                        {multipleGuests ? '1 invité?' :  '2 invité(e)s?'}
+                                    </span>
+                                } */}
                                 <div className='field-wrap'>
                                     <label>Prénom</label>
                                     <Field name='firstName' />
@@ -86,10 +101,26 @@ export default class RSVPForm extends React.Component {
                                     <label>Cellulaire</label>
                                     <Field name='number' />
                                 </div>
+                                {/* {multipleGuests && (
+                                    <React.Fragment>
+                                        <div className='field-wrap'>
+                                            <label>Nom +1</label>
+                                            <Field name='plus_one.firstName' />
+                                        </div>
+                                        <div className='field-wrap'>
+                                            <label>Prenom + 1</label>
+                                            <Field name='plus_one.lastName' />
+                                        </div>
+                                        <div className='field-wrap'>
+                                            <label>Email +1</label>
+                                            <Field name='plus_one.email' />
+                                        </div>
+                                    </React.Fragment>
+                                )} */}
                                 <div className='field-wrap' style={{opacity: !hasCodeField ? '0' : '1'}}>
                                     <label>Code secret</label>
-                                    <Field name='code' value={!hasCodeField ? 'admin' : ''} render ={ ({form})  => (
-                                        <input onChange={ e => form.setFieldValue('code', e.target.value)} />
+                                    <Field name='code' value={!hasCodeField ? 'admin' : ''} render={({form}) => (
+                                        <input onChange={e => form.setFieldValue('code', e.target.value)} />
                                     )}/>
                                 </div>
                                 {this.renderErrorMsg(errors, touched)}

@@ -364,6 +364,19 @@ body {
 	  margin-top: 10%;
   }
   
+  .admin-modal #delete-guest {
+	  background: red!important;
+  }
+
+  #delete-guest:hover {
+	transform: scale(1.2);
+  }
+
+  .admin-modal .warning {
+	background: #23c9df;
+  
+  }
+
   .admin-modal li {
 	  padding: 0;
 	  width: 90%;
@@ -517,6 +530,8 @@ body {
 	  height: 100%;
 	  border-collapse: collapse;
 	  border: 1px solid #f7792f;
+	  transition: .3s;
+	  animation: reveal .5s linear;
   }
   
   .list tr {
@@ -562,6 +577,7 @@ body {
 	  margin: 1%;
 	  transition: .3s;
 	  cursor: help;
+	  animation: reveal .5s linear;
   }
   
   .guest-info ul {

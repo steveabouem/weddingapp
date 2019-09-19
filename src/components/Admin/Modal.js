@@ -11,10 +11,12 @@ export class Modal extends React.Component {
             currentGuest: null,
             isLoading: true,
             isFormActive: false,
-            isOpen: props.isOpen
+            isOpen: props.isOpen,
+            displayWarning: false
         };
 
         this.toggleForm = this.toggleForm.bind(this);
+        this.toggleWarning = this.toggleWarning.bind(this);
     }
 
     async toggleForm() {
@@ -22,6 +24,10 @@ export class Modal extends React.Component {
         this.props.shouldEnlargeModal(this.state.isFormActive);
     }
     
+    toggleWarning() {
+        this.setState({displayWarning: !this.state.displayWarning});
+    }
+
     componentDidMount() {
         let currentGuest = this.props.currentGuest;
         
@@ -31,55 +37,60 @@ export class Modal extends React.Component {
     }
 
     render() {
-        const {currentGuest, isLoading, isFormActive} = this.state;
+        const {currentGuest, isLoading, isFormActive, displayWarning} = this.state;
         const {removeGuest, editGuest} = this.context;
         const {toggleModal} = this.props;
         return isLoading ? (
             <div className='material-icons loading'>person_pin</div>
-            )
-            :
-            (
-                <ul>
-                    {isFormActive ? (
-                        <RSVPForm closeAction={this.toggleForm} referer={currentGuest} callback={this.toggleForm} />
-                    )
-                        :
-                    (
-                        <div className='enlarge-modal'>
-                            <li>
-                                <h5>Prénom</h5>
-                                <span>{currentGuest.firstName}</span>
+        ) : (
+            <ul>
+                {isFormActive ? (
+                    <RSVPForm closeAction={this.toggleForm} referer={currentGuest} callback={this.toggleForm} />
+                )
+                    :
+                (
+                    <div className='enlarge-modal'>
+                        <li>
+                            <h5>Prénom</h5>
+                            <span>{currentGuest.firstName}</span>
+                        </li>
+                        <li>
+                            <h5>Nom</h5>
+                            <span>{currentGuest.lastName}</span>
+                        </li>
+                        <li>
+                            <h5>Email</h5>
+                            <span>{currentGuest.email}</span>
+                        </li>
+                        <li>
+                            <h5>Tel</h5>
+                            <span>{currentGuest.number}</span>
+                        </li>
+                        <li>
+                            <h5>Date d'enregistrement</h5>
+                            <span>
+                                {currentGuest.registered_on ?
+                                    moment(currentGuest.registered_on).format('DD MM YYYY, h:mm:ss a')
+                                    :
+                                    'N/A'
+                                }
+                            </span>
+                        </li>
+                        <li className='modal-buttons'>
+                            <span>MODIFIER</span>
+                            <span onClick={this.toggleWarning}>SUPPRIMER</span>
+                            <span onClick={this.toggleForm}>AJOUTER +1</span>
+                        </li>
+                        {displayWarning && (
+                            <li className='modal-buttons warning'>
+                                Cette opération est totalement irréversible!
+                                <span id='delete-guest' onClick={() =>{ removeGuest(currentGuest.uid, toggleModal);}}>ÉFFACES DISDONC</span>
+                                <span onClick={this.toggleWarning}>ANNULER</span>
                             </li>
-                            <li>
-                                <h5>Nom</h5>
-                                <span>{currentGuest.lastName}</span>
-                            </li>
-                            <li>
-                                <h5>Email</h5>
-                                <span>{currentGuest.email}</span>
-                            </li>
-                            <li>
-                                <h5>Tel</h5>
-                                <span>{currentGuest.number}</span>
-                            </li>
-                            <li>
-                                <h5>Date d'enregistrement</h5>
-                                <span>
-                                    {currentGuest.registered_on ?
-                                        moment(currentGuest.registered_on).format('DD MM YYYY, h:mm:ss a')
-                                        :
-                                        'N/A'
-                                    }
-                                </span>
-                            </li>
-                            <li className='modal-buttons'>
-                                <span>MODIFIER</span>
-                                <span onClick={() =>{ removeGuest(currentGuest.uid); toggleModal()}}>SUPPRIMER</span>
-                                <span onClick={this.toggleForm}>AJOUTER +1</span>
-                            </li>
-                        </div>
-                    )}
-                </ul>
+                        )}
+                    </div>
+                )}
+            </ul>
         );
     }
 }

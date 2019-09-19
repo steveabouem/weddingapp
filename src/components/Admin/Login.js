@@ -9,19 +9,38 @@ export default class Login extends React.Component {
         super();
 
         this.state = {
-
+            code: null
         };
 
         this.submit = this.submit.bind(this);
         this.back = this.back.bind(this);
+        this.go = this.go.bind(this);
     }
 
-    submit({code}) {
-        this.context.loginAdmin(code, this.props)
+    submit() {
+        const {code} = this.state;
+        if(code) {
+            this.context.loginAdmin(code, this.props)
+        }
+    }
+
+    go(e) {
+        const {code} = this.state;
+        if (e.keyCode === 13 && code) {
+            this.submit(code);
+        }
     }
 
     back() {
         this.props.history.push('/')
+    }
+
+    componentDidMount() {
+        document.addEventListener('keypress', this.go);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keypress', this.go);
     }
 
     render() {
@@ -40,14 +59,16 @@ export default class Login extends React.Component {
                     <div className='form-wrap login'>
                         <Formik 
                             validationSchema = {validation}
-                            onSubmit={values => this.submit(values)}
+                            onSubmit={this.submit}
                         >
                             {({errors, touched, submitForm}) => (
                                 <React.Fragment>
                                     <div className='field-wrap'>
                                         <label>Code secret</label>
                                         {errors.code && touched.code && <div className='form-error'>{errors.code}</div>}
-                                        <Field name='code' />
+                                        <Field name='code' render={(field, form) => (
+                                            <input onChange={e => this.setState({code: e.target.value})}/>
+                                        )}/>
                                     </div>
                                     <div className='submit-button' onClick={submitForm}>SOUMETTRE</div>
                                     <div className='submit-button' onClick={this.back}>RETOUR</div>

@@ -182,6 +182,12 @@ export default class WorkSpace extends React.Component {
 
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.guestList && this.state.guestList && prevState.length !== this.state.guestList.length) {
+            this.loadGuestList();
+        }
+    }
+
     render() {
         const {hasAdminPrivileges,rsvpValues, guestList, playlist, guestsLoaded} = this.state;
         return (

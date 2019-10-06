@@ -36,7 +36,7 @@ export default class RSVPForm extends React.Component {
     renderErrorMsg(errorsList, touched) {
         let total = Object.keys(errorsList).length;
         if(total > 0) {
-            return <div className='form-error'>{total} champs vides ou invalides dans le formulaire. Notez que tous les champs sont obligatoires</div>
+            return <div className='form-error'>{total} champs vides ou invalides dans le formulaire. Notez que tous les champs sont obligatoires</div>;
         }
     }
 
@@ -49,7 +49,7 @@ export default class RSVPForm extends React.Component {
                 .required('Prière dìndiquer votre prénom siouplait!'),
             lastName: Yup.string()
                 .min(2, 'Le nom de famille devrait avoir au moins deux(2) lettres:(')
-                .required('Prière dìndiquer votre nom de famille siouplait!'),
+                .required('Prière  d\'indiquer votre nom de famille siouplait!'),
             number: Yup.string()
                 // .matches() CONFIRM IF LOCAL ONLY OR ALSO FOREIGN, also check if local celphones have a specific regex
                 .required('Prière d\'insérer un numéro valide()'),

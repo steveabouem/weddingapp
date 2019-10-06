@@ -67,7 +67,7 @@ export default class Login extends React.Component {
                                         <label>Code secret</label>
                                         {errors.code && touched.code && <div className='form-error'>{errors.code}</div>}
                                         <Field name='code' render={(field, form) => (
-                                            <input onChange={e => this.setState({code: e.target.value})}/>
+                                            <input autoFocus onChange={e => this.setState({code: e.target.value})}/>
                                         )}/>
                                     </div>
                                     <div className='submit-button' onClick={submitForm}>SOUMETTRE</div>

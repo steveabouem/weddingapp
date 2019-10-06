@@ -38,7 +38,7 @@ export class Modal extends React.Component {
 
     render() {
         const {currentGuest, isLoading, isFormActive, displayWarning} = this.state;
-        const {removeGuest, editGuest} = this.context;
+        const {removeGuest} = this.context;
         const {toggleModal} = this.props;
         return isLoading ? (
             <div className='material-icons loading'>person_pin</div>
@@ -84,7 +84,7 @@ export class Modal extends React.Component {
                         {displayWarning && (
                             <li className='modal-buttons warning'>
                                 Cette opération est totalement irréversible!
-                                <span id='delete-guest' onClick={() =>{ removeGuest(currentGuest.uid, toggleModal);}}>ÉFFACES DISDONC</span>
+                                <span id='delete-guest' onClick={() =>{removeGuest(currentGuest.uid, toggleModal);}}>ÉFFACES DISDONC</span>
                                 <span onClick={this.toggleWarning}>ANNULER</span>
                             </li>
                         )}

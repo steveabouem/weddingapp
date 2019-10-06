@@ -3,7 +3,7 @@ import {MemoryRouter, Switch, Route, NavLink} from 'react-router-dom';
 import {FirebaseContext} from '../Context';
 import {TopNav} from '../Menus/TopNav';
 import {WelcomeAdmin} from './Welcome';
-import {PostUpdates} from './PostUpdates';
+import {BlogPostForm} from './BlogPostForm';
 import {PostMedia} from './PostMedia';
 import {GuestList} from './GuestList';
 import {Modal} from './Modal';
@@ -64,12 +64,12 @@ export class AdminWorkSpace extends React.Component {
                             <div className='admin-sidebar'>
                                 <Switch>
                                     <ul className='admin-links'>
-                                        <NavLink to='/list' activeClassName='admin-link-active'>
+                                        <NavLink to='/invites' activeClassName='admin-link-active'>
                                             <li>
                                                     LISTE DES INVITÉS
                                             </li>
                                         </NavLink>
-                                        <NavLink to='/updates' activeClassName='admin-link-active'>
+                                        <NavLink to='/articles' activeClassName='admin-link-active'>
                                             <li>
                                                     AJOUTER DES NOUVELLES
                                             </li>
@@ -84,8 +84,8 @@ export class AdminWorkSpace extends React.Component {
                             </div>
                             <div className='admin-data-panel'>
                                 <Route exact path='/' component={WelcomeAdmin} />
-                                <Route path='/list' render={() => (<GuestList renderGuestInfo={this.renderGuestInfo} toggleModal={this.toggleModal}/>)} />
-                                <Route exact path='/updates' component={PostUpdates} />
+                                <Route path='/invites' render={() => (<GuestList renderGuestInfo={this.renderGuestInfo} toggleModal={this.toggleModal}/>)} />
+                                <Route exact path='/articles' component={BlogPostForm} />
                                 <Route exact path='/media' component={PostMedia} />
                             </div>
                         </div>

@@ -84,7 +84,7 @@ export default class Main extends React.Component {
                         <div className='gif-container'>
                             <div className='animated-div thank-you' />
                         </div>
-                        <div className='credentials-left'>Version 0.5</div>
+                        <div className='credentials-left'>Version 0.5.1</div>
                         <div className='credentials-right'>Credentials</div>
                     </Container>
             </div>

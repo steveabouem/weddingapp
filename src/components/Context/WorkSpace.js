@@ -1,12 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 import Main from '../Main';
 import {AdminWorkSpace} from '../Admin';
 import Login from '../Admin/Login';
+import {BlogPosts} from '../BlogPosts';
 import {AdminContext, FirebaseContext} from '../Context';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import audio1 from '../../assets/audio/mad_over_you.mp3'
 import audio2 from '../../assets/audio/why_i_love_you.mp3'
@@ -16,6 +17,11 @@ export default class WorkSpace extends React.Component {
         super();
         //init taost
         toast.configure()
+
+        // remember music modal selection
+        this.toggleMusicModal = bool => {
+            this.setState({isMusicModalOpen: bool});
+        }
 
         // api calls
         this.loginAdmin = (entry, props) => {
@@ -53,6 +59,111 @@ export default class WorkSpace extends React.Component {
             })
             .catch( error => {
                 console.log(error);
+            });
+        };
+
+        this.createBlogPost = (entry, callBack) => {
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/createBlogPost', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                'content-type': 'application/json' }
+                }, 
+                {data:{entry}}
+            )
+            .then( ({data}) => {
+                this.setState({blogPosts: data.blogPosts});
+                toast.success('Article créé avec succès!', {position: 'bottom-right'});
+                if(callBack) {
+                    callBack();
+                }
+            }).catch( () => {
+                toast.warn('Erreur lors de la transaction, veuillez essayer de nouveau', {position: 'bottom-right'});
+            })
+        };
+
+        this.loadBlogPosts = callBack => {
+            axios.get('https://us-central1-our-wedding-55849.cloudfunctions.net/loadBlogPosts', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                'content-type': 'application/json' }
+                }
+            ).then( r => {
+                this.setState({
+                    blogPosts: r.data.blogPosts
+                });
+                if(callBack) {
+                    callBack();
+                }
+            }).catch( () => {
+                toast.warn('Erreur de chargement, veuillez essayer de nouveau', {position: 'bottom-right'});
+            });
+        };
+
+        this.deleteBlogPost = (id, callBack) => {
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/deleteBlogPost', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                'content-type': 'application/json' }
+                }, 
+                {data:{id}}
+            ).then( ({data}) => {
+                this.setState({blogPosts: data.blogPosts});
+                if(callBack) {
+                    callBack();
+                }
+            }).catch( () => {
+                toast.warn('Erreur lors de la transaction, veuillez essayer de nouveau', {position: 'bottom-right'});
+            });
+        };
+
+        this.createPostComment = (postId, comment, callBack) => {
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/createPostComment', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                'content-type': 'application/json' }
+                }, 
+                {data:{comment, postId}}
+            ).then( r => {
+                console.log({r});
+                if(callBack) {
+                    callBack();
+                }
+            }).catch( () => {
+                toast.warn('Erreur lors de la transaction, veuillez essayer de nouveau', {position: 'bottom-right'});
+            });
+        };
+
+        this.loadPostComments = (callback) => {
+            axios.get('https://us-central1-our-wedding-55849.cloudfunctions.net/loadPostComments', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                    'content-type': 'application/json' }
+                }
+            )
+            .then(({data}) => {
+                this.setState({postComments: data.commentsList});
+                if(callback) {
+                    callback();
+                }
+            }).catch( () => {
+                toast.warn('Erreur lors de la transaction, veuillez essayer de nouveau', {position: 'bottom-right'});
+            });
+        };
+
+        this.editBlogPost = (id, update, callBack) => {
+            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/editPost', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                    'content-type': 'application/json' }
+                },
+                {data: {id, update}}
+            )
+            .then(() => {
+                if(callBack) {
+                    callBack();
+                }
+            }).catch( () => {
+                toast.warn('Erreur lors de la transaction, veuillez essayer de nouveau', {position: 'bottom-right'});
             });
         };
 
@@ -166,6 +277,8 @@ export default class WorkSpace extends React.Component {
             rsvpValues: null,
             guestList: null,
             guestsLoaded: false,
+            isMusicModalOpen: true,
+            commentsList: null,
             playlist: [
                 {
                     artistName: 'Runtown',
@@ -183,34 +296,40 @@ export default class WorkSpace extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevState.guestList && this.state.guestList && prevState.length !== this.state.guestList.length) {
+        if(prevState.guestList && this.state.guestList && prevState.guestList.length !== this.state.guestList.length) {
             this.loadGuestList();
+        }
+        if(prevState.blogPosts && this.state.blogPosts && prevState.blogPosts.length !== this.state.blogPosts.length) {
+            this.loadBlogPosts();
         }
     }
 
     render() {
-        const {hasAdminPrivileges,rsvpValues, guestList, playlist, guestsLoaded} = this.state;
         return (
             <FirebaseContext.Provider value={{
                 // properties
-                hasAdminPrivileges,
-                rsvpValues,
-                guestList,
-                guestsLoaded,
-                playlist,
+               ...this.state,
                 // mutators
+                toggleMusicModal: this.toggleMusicModal,
                 addNewGuest: this.addNewGuest,
                 editGuest: this.editGuest,
                 removeGuest: this.removeGuest,
                 submitRSVP: this.submitRSVP,
                 loginAdmin: this.loginAdmin,
                 loadGuestList: this.loadGuestList,
+                createBlogPost: this.createBlogPost,
+                loadBlogPosts: this.loadBlogPosts,
+                editBlogPost: this.editBlogPost,
+                loadPostComments: this.loadPostComments,
+                deleteBlogPost: this.deleteBlogPost
             }}>
                 <Router>
                     <Switch>
                         <Route exact path = '/' component={Main}/>
                         <Route path = '/administrateur' component={Login}/>
                         <Route path = '/invites' component={AdminWorkSpace}/>
+                        <Route path = '/blog' component={BlogPosts}/>
+                        {/* <Route path = '/livre-dor' component={Testimonials}/> */}
                     </Switch>
                 </Router>
             </FirebaseContext.Provider>

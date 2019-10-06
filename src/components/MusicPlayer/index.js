@@ -1,6 +1,5 @@
 import React from 'react';
-import { FirebaseContext } from '../Context';
-import { toast } from 'react-toastify';
+import {FirebaseContext} from '../Context';
 import 'react-toastify/dist/ReactToastify.css';
 
 export class MusicPlayer extends React.Component {
@@ -14,7 +13,7 @@ export class MusicPlayer extends React.Component {
       track: 0,
       duration: 0,
       currentTime: 0,
-      isAutoPlayModalOpen: true
+      isAutoPlayModalOpen: false
     }
 
     this.renderCurrentTime = this.renderCurrentTime.bind(this);
@@ -39,7 +38,7 @@ export class MusicPlayer extends React.Component {
     // the DOM has rendered the audio ref
     this.setState(prevState => {
       if(!prevState.ready) {
-        return {ready: true, isAutoPlayModalOpen: true};
+        return {ready: true};
       }
     });
   }
@@ -102,25 +101,25 @@ export class MusicPlayer extends React.Component {
   }
 
   render() {
-    const {playlist} = this.context;
-    const {track, isCollapsed, isPlaying, playbackError, isAutoPlayModalOpen} = this.state;
+    const {playlist, toggleMusicModal, isMusicModalOpen} = this.context;
+    const {track, isCollapsed, isPlaying, playbackError} = this.state;
 
     return (
       <React.Fragment>
-        {isAutoPlayModalOpen && (
+        {isMusicModalOpen && (
           <div className='admin-modal music'>
-              <div 
+              {/* <div 
                   className='material-icons close' 
                   onClick={this.toggleModal}
               >
                   close
-              </div>
+              </div> */}
               <ul>
                 <li>Musique?</li>
                 <li className='modal-buttons'>
-                    <span onClick={() => this.setState({isAutoPlayModalOpen: false})}>NON</span>
+                    <span onClick={() => toggleMusicModal(false)}>NON</span>
                     <span onClick={() => 
-                      {this.playAudio(); this.setState({isAutoPlayModalOpen:false});
+                      {this.playAudio(); toggleMusicModal(false);
                     }}>
                       OUI
                     </span>

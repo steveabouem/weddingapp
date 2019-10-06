@@ -49,12 +49,12 @@ export class GuestList extends React.Component {
 
 
     render() {
-        const {editGuest, guestList, guestsLoaded} = this.context;
+        const { guestList, guestsLoaded} = this.context;
         const {isFormModalOpen, isTableModeActive} = this.state;
 
         return !guestsLoaded ? (
                 <div className='material-icons loading'>view_list</div>
-            ) : (
+        ) : (
             <React.Fragment>
                 <Container additionalClass='text-center' id='guest-list-wrap'>
                     <span 

@@ -5,6 +5,7 @@ import {Container} from '../Sections';
 import {Countdown} from '../Countdown';
 import RSVPForm from './RSVPForm';
 import {MusicPlayer} from '../MusicPlayer';
+import {SlideshowContainer} from '../Diaporama';
 
 export default class Main extends React.Component {
     constructor() {
@@ -67,6 +68,9 @@ export default class Main extends React.Component {
                             <div className='animated-div wedding-details' />
                         </div>
                     </Container>
+                    <Container additionalClass='slideshow-container'>
+                        <SlideshowContainer/>
+                    </Container>
                     <Container additionalClass='text-center white'>
                         <div className='center-gif details-gif'/>
                         <h3>Détails de la cérémonie</h3>
@@ -84,7 +88,7 @@ export default class Main extends React.Component {
                         <div className='gif-container'>
                             <div className='animated-div thank-you' />
                         </div>
-                        <div className='credentials-left'>Version 0.5.1</div>
+                        <div className='credentials-left'>Version 0.6</div>
                         <div className='credentials-right'>Credentials</div>
                     </Container>
             </div>

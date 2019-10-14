@@ -109,9 +109,9 @@ exports.createBlogPost = functions.https.onRequest((req, res) => {
 exports.editPost = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         const {id, update} = req.body;
-        if(update.target === 'likes'){
+        if(update.target === 'likes') {
             blogPosts.doc(id).update({[`likes.${uid(4)}`]: update.content})
-            .then(res => {
+            .then(() => {
                 blogPosts.doc(id).get()
                 .then(snapshot => {
                     res.send({

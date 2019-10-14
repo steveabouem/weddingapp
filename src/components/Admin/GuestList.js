@@ -53,7 +53,7 @@ export class GuestList extends React.Component {
         const {isFormModalOpen, isTableModeActive} = this.state;
 
         return !guestsLoaded ? (
-                <div className='material-icons loading'>view_list</div>
+            <div className='material-icons loading'>view_list</div>
         ) : (
             <React.Fragment>
                 <Container additionalClass='text-center' id='guest-list-wrap'>

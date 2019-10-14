@@ -123,8 +123,8 @@ export default class WorkSpace extends React.Component {
                 'content-type': 'application/json' }
                 }, 
                 {data:{comment, postId}}
-            ).then( r => {
-                console.log({r});
+            ).then(()=> {
+                toast.info('Commentaire envoyé!', {position:'bottom-right'});
                 if(callBack) {
                     callBack();
                 }
@@ -136,16 +136,21 @@ export default class WorkSpace extends React.Component {
         this.loadPostComments = (callback) => {
             axios.get('https://us-central1-our-wedding-55849.cloudfunctions.net/loadPostComments', 
                 {headers: 
-                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                {Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
                     'content-type': 'application/json' }
                 }
             )
             .then(({data}) => {
+                console.log(data);
+                
                 this.setState({postComments: data.commentsList});
+                toast.info('Commentaires prets', {position: 'bottom-right'});
                 if(callback) {
                     callback();
                 }
-            }).catch( () => {
+            }).catch((e) => {
+                console.log(e);
+                
                 toast.warn('Erreur lors de la transaction, veuillez essayer de nouveau', {position: 'bottom-right'});
             });
         };
@@ -301,6 +306,9 @@ export default class WorkSpace extends React.Component {
         }
         if(prevState.blogPosts && this.state.blogPosts && prevState.blogPosts.length !== this.state.blogPosts.length) {
             this.loadBlogPosts();
+        } 
+        if(prevState.postComments && this.state.postComments && prevState.postComments !== this.state.postComments) {
+            this.loadPostComments(null);
         }
     }
 
@@ -321,7 +329,8 @@ export default class WorkSpace extends React.Component {
                 loadBlogPosts: this.loadBlogPosts,
                 editBlogPost: this.editBlogPost,
                 loadPostComments: this.loadPostComments,
-                deleteBlogPost: this.deleteBlogPost
+                deleteBlogPost: this.deleteBlogPost,
+                createPostComment: this.createPostComment
             }}>
                 <Router>
                     <Switch>

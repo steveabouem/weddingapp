@@ -9,13 +9,14 @@ export class BlogPosts extends React.Component {
 
         this.state = {
             isLoading: true,
+            totalPosts: 0
         };
     }
 
     componentDidMount() {
         this.context.loadBlogPosts(this.setState({isLoading: false}));
     }
-
+y
     render() {
         const {blogPosts} = this.context;
         return this.state.isLoading ? (
@@ -26,7 +27,7 @@ export class BlogPosts extends React.Component {
                 <div className='container' id='blog-page'>
                     <h1>LE BLOG</h1>
                     {blogPosts && blogPosts.length > 0 ? blogPosts.map(post => (
-                        <SinglePost post={post} i={post.id} />
+                        <SinglePost post={post} postId={post.id} />
                     )) : (
                         <div>Aucun Article pour l'instant</div>
                     )}

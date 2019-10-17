@@ -14,12 +14,14 @@ export class AdminWorkSpace extends React.Component {
 
         this.state = {
             isGuestModalOpen: false,
-            enlargeModal: false
+            enlargeModal: false,
+            isExpanded: true
         };
 
         this.renderGuestInfo = this.renderGuestInfo.bind(this);
         this.toggleModal= this.toggleModal.bind(this);
         this.shouldEnlargeModal= this.shouldEnlargeModal.bind(this);
+        this.toggleSidebar= this.toggleSidebar.bind(this);
     }
 
     renderGuestInfo(uid) {
@@ -31,13 +33,19 @@ export class AdminWorkSpace extends React.Component {
     toggleModal() {
         this.setState({isGuestModalOpen: !this.state.isGuestModalOpen});
     }
+    
+    
+    toggleSidebar() {
+        this.setState({isExpanded: !this.state.isExpanded});
+    }
 
     async shouldEnlargeModal(bool) {
         this.setState({enlargeModal: bool});
     }
 
+
     render() {
-        const {isGuestModalOpen, currentGuest, enlargeModal} = this.state;
+        const {isGuestModalOpen, currentGuest, enlargeModal, isExpanded} = this.state;
 
         return (
             <React.Fragment>
@@ -61,32 +69,37 @@ export class AdminWorkSpace extends React.Component {
                 <div className='gla_page' id='guests-container'>
                     <MemoryRouter>
                         <div className='admin-space'>
-                            <div className='admin-sidebar'>
+                            <div className={'admin-sidebar' + (isExpanded ? '-expanded' : '')}>
                                 <Switch>
                                     <ul className='admin-links'>
                                         <NavLink to='/invites' activeClassName='admin-link-active'>
-                                            <li>
+                                            <li onClick={this.toggleSidebar}>
+                                                <span>
                                                     LISTE DES INVITÉS
+                                                </span>
                                             </li>
                                         </NavLink>
                                         <NavLink to='/articles' activeClassName='admin-link-active'>
-                                            <li>
+                                            <li  onClick={this.toggleSidebar}>
+                                                <span>
                                                     AJOUTER DES NOUVELLES
+                                                </span>
                                             </li>
                                         </NavLink>
-                                        <NavLink to='/media' activeClassName='admin-link-active'>
-                                            <li>
+                                        {/* <NavLink to='/media' activeClassName='admin-link-active'>
+                                            <li  onClick={this.toggleSidebar}>
+                                                <span>
                                                     POSTER DES PHOTOS/VIDEOS
+                                                </span>
                                             </li>
-                                        </NavLink>
+                                        </NavLink> */}
                                     </ul>
                                 </Switch>
                             </div>
                             <div className='admin-data-panel'>
                                 <Route exact path='/' component={WelcomeAdmin} />
-                                <Route path='/invites' render={() => (<GuestList renderGuestInfo={this.renderGuestInfo} toggleModal={this.toggleModal}/>)} />
-                                <Route exact path='/articles' component={BlogPostForm} />
-                                <Route exact path='/media' component={PostMedia} />
+                                <Route path='/invites' render={() => (<GuestList renderGuestInfo={this.renderGuestInfo} toggleModal={this.toggleModal} toggleSidebar={this.toggleSidebar}/>)} />
+                                <Route exact path='/articles' render={()=> <BlogPostForm toggleSidebar={this.toggleSidebar} />} />
                             </div>
                         </div>
                     </MemoryRouter>

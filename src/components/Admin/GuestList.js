@@ -50,6 +50,7 @@ export class GuestList extends React.Component {
 
     render() {
         const { guestList, guestsLoaded} = this.context;
+        const { toggleSidebar} = this.props;
         const {isFormModalOpen, isTableModeActive} = this.state;
 
         return !guestsLoaded ? (
@@ -77,8 +78,20 @@ export class GuestList extends React.Component {
                     >
                         {isTableModeActive ? 'apps' : 'dvr'}
                     </span>
+                    <span 
+                        className='material-icons add-guest-button default'
+                        onClick={toggleSidebar}
+                        style={{top: '15%'}}
+                        data-for='toggle-sidebar'
+                        data-tip='toggle-sidebar'
+                        data-place='left'
+
+                    >
+                        settings
+                    </span>
                     <ReactTooltip id='switch-table'>{isTableModeActive ? 'Voir cartes' : 'Voir tableau'}</ReactTooltip>
                     <ReactTooltip id='add-guest-admin'>Ajouter un(e) invité(e)</ReactTooltip>
+                    <ReactTooltip id='toggle-sidebar'>Menu</ReactTooltip>
                     <div className='list'>
                         <div className='list-inner'>
                             <h1>STATISTIQUES INVITÉS</h1>

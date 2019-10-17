@@ -54,6 +54,7 @@ export class BlogPostForm extends React.Component {
 
     render() {
         const {isLoading, isModalOpen, isSubmitting, isFormOpen} = this.state,
+        {toggleSidebar} = this.props,
         {blogPosts} = this.context,
         validation = Yup.object().shape({
             title: Yup.string()
@@ -97,7 +98,7 @@ export class BlogPostForm extends React.Component {
                             <span 
                                 className='material-icons add-guest-button default'
                                 onClick={this.toggleForm}
-                                style={{top: '10%'}}
+                                style={{top: '5%'}}
                                 data-for='switch-table'
                                 data-tip='switch-table'
                                 data-place='left'
@@ -105,9 +106,21 @@ export class BlogPostForm extends React.Component {
                             >
                                 autorenew
                             </span>
+                            <span 
+                                className='material-icons add-guest-button default'
+                                onClick={toggleSidebar}
+                                style={{top: '10%'}}
+                                data-for='toggle-sidebar'
+                                data-tip='toggle-sidebar'
+                                data-place='left'
+
+                            >
+                                settings
+                            </span>
+                            <ReactTooltip id='toggle-sidebar'>Menu</ReactTooltip>
                             <ReactTooltip id='switch-table'>{isFormOpen ? 'Voir articles du blog' : 'Rédiger un article'}</ReactTooltip>
                             <div className="list">
-                                <div className='list-inner scrollable'>
+                                <div className='list-inner'>
                                     <h1 style={{margin: '0'}}>{!isFormOpen ? 'CONSULTER/MODIFIER LES ARTICLES' : 'CRÉÉR UN ARTICLE'}</h1>
                                     {isFormOpen ? (
                                         <React.Fragment>

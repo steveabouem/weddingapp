@@ -260,7 +260,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
         firstName =  req.body.userInfo.firstName,
         lastName =  req.body.userInfo.lastName,
         code = userInfo.code,
-        src = './banner.jpeg';
+        src = './invitation-video';
         // USE TO VERIFY DUBS
         // dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
 
@@ -409,7 +409,7 @@ exports.editGuest = functions.https.onRequest((req,res) => {
 exports.loadGuestList = functions.https.onRequest((req, res) => {
     cors( req, res, () => {
         let list = [];
-        guestList.get()
+        guestList.orderBy('lastName').get()
         .then(snapshot => {
             snapshot.forEach(doc => {
                 let guest = doc.data();

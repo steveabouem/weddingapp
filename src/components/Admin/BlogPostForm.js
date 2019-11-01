@@ -121,7 +121,7 @@ export class BlogPostForm extends React.Component {
                             <ReactTooltip id='switch-table'>{isFormOpen ? 'Voir articles du blog' : 'Rédiger un article'}</ReactTooltip>
                             <div className="list">
                                 <div className='list-inner'>
-                                    <h1 style={{margin: '0'}}>{!isFormOpen ? 'CONSULTER/MODIFIER LES ARTICLES' : 'CRÉÉR UN ARTICLE'}</h1>
+                                    <h1 style={{margin: '0'}}>{!isFormOpen ? 'ARTICLES POSTÉS' : 'CRÉÉR UN ARTICLE'}</h1>
                                     {isFormOpen ? (
                                         <React.Fragment>
                                             <div className='field-wrap'>

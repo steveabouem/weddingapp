@@ -52,14 +52,14 @@ export class TopNav extends React.Component {
                                                 RSVP
                                             </a>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <a
                                                 onClick={this.scrollToSlideShow}
                                                 style={{ cursor: 'pointer' }}
                                                 >
                                                 GALLERIE
                                         </a>
-                                        </li>
+                                        </li> */}
                                     </React.Fragment>
                                 )}
                                 <li>

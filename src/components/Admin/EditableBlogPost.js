@@ -39,7 +39,16 @@ export class EditableBlogPost extends React.Component {
                 </span>
                 <h4>{post.title}</h4>
                 <p>{post.content}</p>
-                <span>{post.created} {post.likes ? (post.likes.length + "J'aime") : ''}</span>
+                <span>
+                    Publié le {post.created}<br/>
+                    {
+                        post.likes ? (
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                {Object.keys(post.likes).length}<div className='material-icons'>favorite</div>
+                            </div>
+                        ) : ''
+                    }
+                </span>
             </div>
         ) : (
             <div/>

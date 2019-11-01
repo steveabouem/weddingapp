@@ -2,6 +2,7 @@ import React from 'react';
 import { FirebaseContext } from '../Context';
 import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
+import * as Yup from 'yup';
 import { Formik, Field } from 'formik';
 
 export class SinglePost extends React.Component {
@@ -57,6 +58,15 @@ export class SinglePost extends React.Component {
     render() {
         const {post , postId} = this.props;
         const {hasBeenLiked, displayCommentForm, isSubmitting, sortedComments} = this.state;
+        const validation = Yup.object().shape({
+            content: Yup.string()
+                .min(3, 'Le commentaire est trop court')
+                .required('Aucun commentaire détecté'),
+            email: Yup.string()
+                .min(2, 'Email non valide')
+                .required('Votre email est obligatoire')
+        });
+
         return (
             <div className='post-container' key={'blogpost-' + postId}>
                 <div className='post-container-left'>
@@ -66,7 +76,7 @@ export class SinglePost extends React.Component {
                     <p>{post.content}</p>
                     <div className='post-bottom'>
                         <div className='post-bottom-left'>
-                            <a 
+                            <a
                                 className='material-icons' data-tip={'comment-tip-' + postId}
                                 data-for={'comment-tip-' + postId} onClick={this.toggleForm}
                             >
@@ -75,7 +85,7 @@ export class SinglePost extends React.Component {
                             <ReactTooltip id={'comment-tip-' + postId} effect='float'>Commenter</ReactTooltip>
                         </div>
                         <div className='post-bottom-right'>
-                            <a 
+                            <a
                                 onClick={this.toggleLike} className='material-icons'
                                 data-tip={'like-tip-' + postId} data-for={'like-tip-' + postId}
                                 style={{color: hasBeenLiked ? '#ffb487' : 'initial'}}
@@ -93,11 +103,17 @@ export class SinglePost extends React.Component {
                             ) : (
                                 <Formik
                                     onSubmit={values => this.submitComment(values)}
-                                    initialValues={{content: ''}}
-                                    >
-                                    {({submitForm}) => (
+                                    initialValues={{content: '', email: null}}
+                                    validationSchema = {validation}
+                                >
+                                    {({submitForm, touched, errors}) => (
                                         <React.Fragment>
-                                            <Field name='content' className={'post-comment-field ' + isSubmitting ? 'disabled': ''}/>
+                                            <label>Votre email</label>
+                                            {errors.email && touched.email && <div className='form-error'>Email invalide</div>}
+                                            <Field type="email" name='email' className={'post-comment-field ' + isSubmitting ? 'disabled': ''}/>
+                                            <label>Comentaire</label>
+                                            {errors.email && touched.email && <div className='form-error'>Commentaire invalide</div>}
+                                            <Field name='content' className={'post-comment-field ' + isSubmitting ? 'disabled': ''} component={'textarea'}/>
                                             <div className='submit-button' onClick={submitForm}>Envoyer</div>
                                         </React.Fragment>
                                     )}

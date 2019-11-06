@@ -115,7 +115,7 @@ export class MusicPlayer extends React.Component {
                   close
               </div> */}
               <ul>
-                <li>Musique?</li>
+                <li><h2>Lancer la musique de fonds?</h2></li>
                 <li className='modal-buttons'>
                     <span onClick={() => toggleMusicModal(false)}>NON</span>
                     <span onClick={() => 

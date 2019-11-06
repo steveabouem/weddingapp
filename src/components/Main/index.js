@@ -101,6 +101,9 @@ export default class Main extends React.Component {
                     <div className='gif-container'>
                         <div className='animated-div thank-you' />
                     </div>
+                    <div className='credentials'>
+                        Site conçu par &nbsp;<a href='mailto:webmaster@example.com'>Steve A.</a>.
+                    </div>
                 </Container>
             </div>
         );

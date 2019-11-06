@@ -11,6 +11,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import audio1 from '../../assets/audio/mad_over_you.mp3'
 import audio2 from '../../assets/audio/why_i_love_you.mp3'
+import Evite from '../Evite';
 
 export default class WorkSpace extends React.Component {
     constructor() {
@@ -260,21 +261,15 @@ export default class WorkSpace extends React.Component {
                 });
         };
 
-        this.sendEmailInvite = (content) => {
-            const email = `Chér(e) ${content.name} Merci de bien vouloir vous joindre à nous pour célébrer notre union. Votre invitation se trouve en pièce-jointe.`;
-            axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/sendEmail', 
-            {headers: 
-            { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
-            'content-type': 'application/json' }
-            }, 
-            {data: {email}}
-        )
-            .then( response => {
-                console.log(response);
-            })
-            .catch( error => {
-                console.log(error);
-            })  
+        this.verifyGuest = values => {
+            return (
+                axios.post('https://us-central1-our-wedding-55849.cloudfunctions.net/verifyGuest', 
+                {headers: 
+                { Authorization: `Bearer AIzaSyC7YvDDpudkrY7gvbxgLYUqu4nIwSSiijo`,
+                'content-type': 'application/json' }
+                }, 
+                {data: {verify: values}})
+            );
         };
 
         this.state = {
@@ -330,7 +325,8 @@ export default class WorkSpace extends React.Component {
                 editBlogPost: this.editBlogPost,
                 loadPostComments: this.loadPostComments,
                 deleteBlogPost: this.deleteBlogPost,
-                createPostComment: this.createPostComment
+                createPostComment: this.createPostComment,
+                verifyGuest: this.verifyGuest
             }}>
                 <Router>
                     <Switch>
@@ -338,6 +334,7 @@ export default class WorkSpace extends React.Component {
                         <Route path = '/administrateur' component={Login}/>
                         <Route path = '/invites' component={AdminWorkSpace}/>
                         <Route path = '/blog' component={BlogPosts}/>
+                        <Route path = '/invitation' component={Evite}/>
                         {/* <Route path = '/livre-dor' component={Testimonials}/> */}
                     </Switch>
                 </Router>

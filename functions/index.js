@@ -4,7 +4,6 @@ const functions = require('firebase-functions');
 const env = functions.config();
 const cors = require('cors')({origin: true});
 const sgMail = require('@sendgrid/mail');
-const image2base64 = require('image-to-base64');
 sgMail.setApiKey(env.sendgrid_api.key);
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
@@ -42,34 +41,6 @@ exports.loginAdmin = functions.https.onRequest((req, res) => {
 // ==========end ADMIN AUTH==========
 
 // ==========ADMIN OPERATIONS============
-
-exports.sendEmail = functions.https.onRequest((req, res) => {
-    cors(req, res, () => {
-        let email = req.body.content.email,
-        firstName =  req.body.content.firstName,
-        lastName =  req.body.content.lastName,
-        body = {
-            to: email,
-            from: {name: 'Jacques Arnaud & Grace Lyne', email: 'ourwedding@now.com'},
-            subject: `Invitation électronique pour ${lastName} ${firstName}`,
-            content: {type: 'text/html', value: `<strong>Bonjour ${firstName}! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>`},
-            attachment: null
-        };
-        sgMail.send(body)
-        .then( data => {
-            res.send({
-                code: 200,
-                email: data
-            });
-        })
-        .catch( error => {
-            res.send({
-                code: 500,
-                error
-            });
-        })
-    });
-});
 
 // ====BLOG=====
 exports.createBlogPost = functions.https.onRequest((req, res) => {
@@ -253,77 +224,132 @@ exports.loadPostComments = functions.https.onRequest((req, res) => {
 // ==========end ADMIN OPS==========
 
 // ==========GUEST MANAGEMENT==========
+exports.verifyGuest = functions.https.onRequest((req, res) => {
+    cors( req, res, () => {
+        let {passCode} = req.body.verify;
+        let uid = passCode.trim();
+
+        guestList.doc(uid).get()
+        .then(snapshot => {
+            if(snapshot.data()) {
+                let userInfo = {
+                    firstName: snapshot.data().firstName,
+                    lastName: snapshot.data().lastName,
+                    referer: snapshot.data().referer ? `${snapshot.data().referer.firstName} ${snapshot.data().referer.lastName}`: null
+                };
+                res.send({
+                    code: 200,
+                    userInfo
+                });
+            } else {
+                res.send({
+                    code: 204,
+                    message: 'Aucun utilisateur avec ce code'
+                })
+            }
+        })
+        .catch( e => {
+            console.log('GUEST VERIFICATION ERROR', e);
+            res.send({
+                code: 400
+            });
+        });
+    });
+});
+
 exports.submitRSVP = functions.https.onRequest((req, res) => {
     cors( req, res, () => {
         let userInfo = req.body.userInfo,
         email = req.body.userInfo.email,
         firstName =  req.body.userInfo.firstName,
         lastName =  req.body.userInfo.lastName,
-        code = userInfo.code,
-        src = './invitation-video';
+        userId = uid(16),
+        code = userInfo.code;
+        
         // USE TO VERIFY DUBS
         // dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
-
-        userInfo.uid = uid(16);
+        userInfo.uid = userId;
         if((code === env.invitation_code.key || code === 'admin')) {
-            image2base64(src)
-            .then(
-                (response) => {
-                    let body = {
-                        to: email,
-                        cc: (userInfo.referer ? {email: userInfo.referer.email} ? userInfo.plus_one : {email: userInfo.plus_one.email} : null),
-                        subject: `Invitation électronique pour ${lastName} ${firstName}`,
-                        from: {name: 'Jacques Arnaud & Grace Lyne', email: 'ourwedding@now.com'},
-                        content: [{type: 'text/html', value: `<strong>Bonjour ${firstName}! Vous trouverez en pièce-jointe votre invitation electronique. Nous avons hâte de vous recevoir</strong>`}],
-                        attachments: [
-                            {
-                                content: response,
-                                filename: `Invitation - ${firstName} ${lastName}.jpeg` + (req.body.plus_one ? ` ${req.body.plus_one}` : ''),
-                                type: 'image/jpeg',
-                                disposition: 'attachment',
-                                contentId: 'eVite'
-                            },
-                        ]
-                    };
-
-                    sgMail.send(body)
-                    .catch(e => {
-                        console.log('sendgrid error: ', e);
-                    });
-            })
-            .then( () => {
-                guestList.doc(userInfo.uid).set(userInfo)
-                .then(r => {
-                    try {
-
-                        if(userInfo.referer) {
-                            // in case admins added the plus one themselves, from an existing user
-                            guestList.doc(userInfo.referer.uid).update({plus_one: userInfo.uid});
-                            guestList.doc(userInfo.uid).update({referer_uid: userInfo.referer.uid});
-                        }  
-                        
-                        if(userInfo.plus_one) {
-                            // in case guest added their own plus one themselves, as they're registering
-                            let plusOneId = uid(16);
-                            let data = {...userInfo.plus_one, referer: userInfo, uid: plusOneId};
-                            guestList.doc(plusOneId).set(data);
-                        }
-                    } catch(e) {
-                        console.log('error adding guests', e);
-                        
-                    }
-                    res.send({
-                        code: 200,
-                        data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
-                    });
-                })
+            let body = {
+                to: email,
+                cc: (userInfo.referer ? {email: userInfo.referer.email} ? userInfo.plus_one : {email: userInfo.plus_one.email} : null),
+                subject: `Invitation électronique pour ${lastName} ${firstName}`,
+                from: {name: 'Jacques Arnaud & Grace Line', email: 'ourwedding@now.com'},
+                content: [{type: 'text/html', 
+                    value: `<strong>Bonjour ${firstName}.
+                        Nous avons hâte de vous recevoir!</strong>
+                        <br>
+                        Veuillez consulter votre invitation <a href='our-wedding-55849.web.app/invitation'>ici</a>
+                        <br>
+                        Votre mot de passe est: ${userId}
+                    `
+                }]
+            };
+            guestList.doc(userInfo.uid).set(userInfo)
+            .then(r => {
+                console.log('GUESTLIST UPDATE SUCCESFUL, PROCESSING EMAIL FORWARDING');
+                sgMail.send(body)
                 .catch(e => {
-                    console.log('error setting userfinfo in db:', e);
+                    console.log('sendgrid error: ', e);
+                    res.send({
+                        code: 500,
+                        message: "Error sending email"
+                    });
+                });
+                try {
+                    if(userInfo.referer) {
+                        // in case admins added the plus one themselves, from an existing user
+                        guestList.doc(userInfo.referer.uid).update({plus_one: userInfo.uid})
+                        .catch(e => {
+                            console.log('PLUS ONE ERROR', e);
+                            res.send({
+                                code: 400,
+                                message: 'Unable to update user with his plus one'
+                            });
+
+                        });
+                        guestList.doc(userInfo.uid).update({referer_uid: userInfo.referer.uid})
+                        .catch(e => {
+                            console.log('REFERER ERROR', e);
+                            res.send({
+                                code: 400,
+                                message: 'Unable to update user with his referer'
+                            });
+                        });
+                    }  
+                    
+                    if(userInfo.plus_one) {
+                        // in case guest added their own plus one themselves, as they're registering
+                        let plusOneId = uid(16);
+                        let data = {...userInfo.plus_one, referer: userInfo, uid: plusOneId};
+                        guestList.doc(plusOneId).set(data)
+                        .catch(e => {
+                            console.log('ERROR', e);
+                            res.send({
+                                code: 400,
+                                message: 'Unable to add user referer'
+                            });
+
+                        });
+                    }
+                } catch(e) {
+                    console.log('error adding guests', e);
+                    res.send({
+                        code: 500,
+                        message: "Error setting guest in db"
+                    });
+                }
+                res.send({
+                    code: 200,
+                    data: 'Opération réussie! Un email de confirmation sera envoyé à l\'adresse fournie!'
                 });
             })
-            .catch(
-                (error) => {
-                console.log('base64', error);
+            .catch(e => {
+                console.log('error setting userfinfo in db:', e);
+                res.send({
+                    code: 500,
+                    message: "Error adding guest"
+                });
             });
         } else {
             res.send({

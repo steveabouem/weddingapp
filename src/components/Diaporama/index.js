@@ -1,11 +1,12 @@
 import React from 'react';
-import duoSelfie from '../../assets/images/duo_selfie.jpeg';
 import shootOne from '../../assets/images/shoot_1.jpeg';
 import shootTwo from '../../assets/images/shoot_2.jpeg';
 import loneSea from '../../assets/images/lone_sea_he.jpeg';
 import loneTree from '../../assets/images/lone_tree_she_cropped.jpeg';
 import tocToc from '../../assets/images/toc_toc_couple.jpeg';
 import beachSelfie from '../../assets/images/beach_selfie.jpeg';
+import groupBlond from '../../assets/images/group-blond.jpeg';
+import restoBlond from '../../assets/images/resto-blond.jpeg';
 import { Fade } from 'react-slideshow-image';
 
 
@@ -70,4 +71,4 @@ export class SlideshowContainer extends React.Component {
 }
 
 
-const imagesList = [shootOne, shootTwo, loneSea, loneTree, tocToc, beachSelfie];
+const imagesList = [loneSea, loneTree, beachSelfie, groupBlond, restoBlond, shootOne, shootTwo, tocToc];

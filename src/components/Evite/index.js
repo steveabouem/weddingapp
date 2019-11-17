@@ -39,18 +39,18 @@ export default class Evite extends React.Component {
                 <Container additionalClass='evite-inner'>
                     { isGuestVerified ? (
                         <div className='verified-redirect'>
-                             {/* <div background="black" height="400px" width="auto">
+                                <span> 
+                                    {userInfo && userInfo.firstName ? 'Faire part pour ' + userInfo.firstName : ''}
+                                    {userInfo && userInfo.lastName ? userInfo.lastName : ''}
+                                    {userInfo && userInfo.referer ? userInfo.referer : ''}
+                                </span>
+                                <div background="black" height="400px" width="auto">
                                     <video width="320" height="240" controls>
                                         Invitation video
-                                        <source src="https://storage.cloud.google.com/video-invite/invitation-video.mp4" type="video/mp4"/>
+                                        <source src="https://storage.googleapis.com/video-invite/invitation-video.mp4" type="video/mp4"/>
                                     </video>
-                                </div> */}
-                            <span>
-                                {userInfo && userInfo.firstName ? 'Merci ' + userInfo.firstName : ''}
-                                {userInfo && userInfo.lastName ? userInfo.lastName : ''}
-                                {userInfo && userInfo.referer ? userInfo.referer : ''}
-                            </span>
-                            <a href="https://storage.googleapis.com/video-invite/invitation-video.mp4">VOIR LE FAIRE PART</a>
+                                </div>
+                            {/* <a href="https://storage.googleapis.com/video-invite/invitation-video.mp4">VOIR LE FAIRE PART</a> */}
                         </div>
                     ) : isSubmissionFailed ? (
                         <div style={{width: '80%', margin:'auto', borderBottom: '2px solid'}}>

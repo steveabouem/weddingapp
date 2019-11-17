@@ -21,15 +21,17 @@ export default class Main extends React.Component {
     }
 
     render() {
+        let iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
         return (
             <div className='gla_page'>
-                <MusicPlayer />
+                {!iOS && <MusicPlayer />}
                 <TopNav />
                 <Container
                     additionalClass='text-center padded'
                     id='intro-section'
                 >
                     <div className='gif-container'/>
+                    <div className='overlay-cover'/>
                     <SlideshowContainer/>
                 </Container>
                 <Container  additionalClass='text-center padded'>
@@ -48,41 +50,47 @@ export default class Main extends React.Component {
                 <Container additionalClass='text-center' id='main-countdown'>
                     <Countdown />
                 </Container>
-                <Container additionalClass='text-center padded'>
-                    <div className='gif-container'>
+                <Container additionalClass='text-center padded vows'>
+                    <div className='gif-container' id='story-top-gif'>
                         <div className='animated-div our-story' />
                     </div>
                     <div className='center-gif story-gif'/>
                     <h3>Notre histoire</h3>
                     <div className='couples-quotes'>
                         <p className='his'>
-                            <span>Jacques Arnaud</span><br/>
-                            La cérémonie de mariage civil suivie du vin d’honneur, se tiendra à Nyom, le Vendredi 27 décembre 2019 à partir de 14h. <br/>
-                            Le culte œcuménique de célébration nuptiale aura lieu le samedi 28 décembre 2019, dès 15h à Nkoabang. 
+                            <div className='innner'>
+                                <div className='material-icons quote open'>format_quote</div>Surprenante,<br/>
+                                Montagnes russes, une vraie boule d'énergie
+                                <br/>
+                                Souriante,<br/>
+                                Nos jours ne sont que rarement gris
+                                Inlassablement,<br/>
+                                originale, candide... conquis.<br/>
+                                Mon amie,<br/>
+                                ma promise, ma demeure,<br/>
+                                <b>Elle...C'est ELLE.</b>
+                                <div className='material-icons quote'>format_quote</div><br/>
+                            </div>
+                            <span>Jacques Arnaud</span>
                         </p>
                         <p className='hers'>
-                            <span>Grace Line</span><br/>
-                            La cérémonie de mariage civil suivie du vin d’honneur, se tiendra à Nyom, le Vendredi 27 décembre 2019 à partir de 14h. <br/>
-                            Le culte œcuménique de célébration nuptiale aura lieu le samedi 28 décembre 2019, dès 15h à Nkoabang. 
+                            <div className='inner'>
+                                <div className='material-icons quote open'>format_quote</div>
+                                The way you vex me ehn,I can’t describe!<br/> 
+                                <br/>
+                                But as you get me on my nerves you proportionally know how to soothe me.<br/>
+                                As if God gave you the key, of simple little me.<br/>
+                                I fell in love with a good man, thanks to some precious and inspiring features of his.<br/>
+                                My reflection through his eyes is where I intent to reach for he makes me better.<br/>
+                                To my Haiku, my man, my friend and my future,<br/>
+                                <b>See you at the altar, Mr Manga.</b>
+                                <div className='material-icons quote'>format_quote</div><br/>
+                            </div>
+                            <span>Grace Line</span>
                         </p>
                     </div>
                     <div className='bottom-line'/>
                 </Container>
-                {/* <Container 
-                    id='main-page'
-                    hasScrollIcon
-                    handleClick={this.scrollNextSection}
-                    additionalClass='text-center padded'
-                >
-                    <div className='gif-container'>
-                        <div className='animated-div our-wedding' />
-                    </div>
-                </Container> */}
-                {/* <Container additionalClass='text-center padded' id='wedding-details'>
-                    <div className='gif-container'>
-                        <div className='animated-div wedding-details' />
-                    </div>
-                </Container> */}
                 <Container additionalClass='text-center padded'>
                     <div className='gif-container'>
                         <div className='animated-div wedding-details' />
@@ -90,8 +98,8 @@ export default class Main extends React.Component {
                     <div className='center-gif details-gif'/>
                     <h3>Détails de la cérémonie</h3>
                     <p>
-                        La cérémonie de mariage civil suivie du vin d’honneur, se tiendra à Nyom, le Vendredi 27 décembre 2019 à partir de 14h. <br/>
-                        Le culte œcuménique de célébration nuptiale aura lieu le samedi 28 décembre 2019, dès 15h à Nkoabang. 
+                        La <b>cérémonie de mariage civil</b> suivie du vin d’honneur, se tiendra à <b>Nyom, le Vendredi 27 décembre 2019 à partir de 14h</b>. <br/>
+                        Le <b>culte œcuménique</b> de célébration nuptiale aura lieu le <b>samedi 28 décembre 2019, dès 15h à Nkoabang</b>. 
                         La nourriture, la musique , la danse c’est juste après au même endroit :)
                     </p>
                     <div className='bottom-line'/>
@@ -102,7 +110,7 @@ export default class Main extends React.Component {
                         <div className='animated-div thank-you' />
                     </div>
                     <div className='credentials'>
-                        Site conçu par &nbsp;<a href='mailto:webmaster@example.com'>Steve A.</a>.
+                        <a href='mailto:webmaster@example.com'>Contacter le développeur</a>.
                     </div>
                 </Container>
             </div>

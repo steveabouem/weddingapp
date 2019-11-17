@@ -7,6 +7,7 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(env.sendgrid_api.key);
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
+const sysAdmins = db.collection('admins');
 const guestList = db.collection('guests');
 const blogPosts = db.collection('posts');
 const comments = db.collection('comments');
@@ -258,6 +259,24 @@ exports.verifyGuest = functions.https.onRequest((req, res) => {
 });
 
 exports.submitRSVP = functions.https.onRequest((req, res) => {
+    const renderEmail = (firstName, userId) => (
+        `<div 
+            style="display:flex; flex-direction: column;height:auto;width:auto;background: url(https://images.unsplash.com/photo-1551204175-6b2ae788941f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1700&q=80);padding: 5%;margin:auto;background-size: cover;background-repeat: no-repeat;background-position: center;"
+        >
+        <div 
+            style="color:#64574e;width:auto;background: #ffffffb3;height:auto;margin:auto;border-radius:3px;border: 1px solid #58686c;text-align:justify;padding:5px;"
+        >
+        <h5>Bonjour ${firstName}, et merci de vous joindre à nous pour célébrer notre union.</h5>
+        <ul style="width:100%;margin:auto;list-style:none;padding: 0;">
+        <li style="margin: 0">Votre <b>faire part video</b> est disponible <a href="mangabouem.com/invitation" target="_blank" data-saferedirecturl="https://www.google.com/url?q=http://mangabouem.com/invitation&amp;source=gmail&amp;ust=1573102072150000&amp;usg=AFQjCNFjkcLywCa8_lTXOUYczsCD_K05Dg">ici</a>.</li>
+        <li style="margin: 0">Pour pouvoir le visionner, assurez-vous d'utiliser le <b>mot de passe suivant</b>:</li>
+        <li style="margin: 0">${userId}</li>
+        <li style="margin: 0"><h5>A bientôt, nous avons hâte de vous recevoir!</h5></li>
+        </ul>
+        </div>
+        </div>`
+    );
+
     cors( req, res, () => {
         let userInfo = req.body.userInfo,
         email = req.body.userInfo.email,
@@ -266,8 +285,6 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
         userId = uid(16),
         code = userInfo.code;
         
-        // USE TO VERIFY DUBS
-        // dupCheck = guestList.where('email', '==', email, '&&', 'firstName', '==', firstName);
         userInfo.uid = userId;
         if((code === env.invitation_code.key || code === 'admin')) {
             let body = {
@@ -276,17 +293,22 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                 subject: `Invitation électronique pour ${lastName} ${firstName}`,
                 from: {name: 'Jacques Arnaud & Grace Line', email: 'ourwedding@now.com'},
                 content: [{type: 'text/html', 
-                    value: `<strong>Bonjour ${firstName}.
-                        Nous avons hâte de vous recevoir!</strong>
-                        <br>
-                        Veuillez consulter votre invitation <a href='our-wedding-55849.web.app/invitation'>ici</a>
-                        <br>
-                        Votre mot de passe est: ${userId}
-                    `
+                    value: renderEmail(firstName, userId)
                 }]
             };
+            // avoide double registration
+            guestList.where('email', '==', email ).where('lastName', '==', lastName).where('firstName', '==', firstName).get()
+            .then(snapshot => {
+                if(!snapshot.empty) {
+                    res.send({
+                        code: 403,
+                        error: 'Un(e) invité(e) avec ce nom et cet email existe déjà.'
+                    });
+                }
+            });
+
             guestList.doc(userInfo.uid).set(userInfo)
-            .then(r => {
+            .then(() => {
                 console.log('GUESTLIST UPDATE SUCCESFUL, PROCESSING EMAIL FORWARDING');
                 sgMail.send(body)
                 .catch(e => {
@@ -303,7 +325,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                         .catch(e => {
                             console.log('PLUS ONE ERROR', e);
                             res.send({
-                                code: 400,
+                                code: 500,
                                 message: 'Unable to update user with his plus one'
                             });
 
@@ -312,7 +334,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                         .catch(e => {
                             console.log('REFERER ERROR', e);
                             res.send({
-                                code: 400,
+                                code: 500,
                                 message: 'Unable to update user with his referer'
                             });
                         });
@@ -326,7 +348,7 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
                         .catch(e => {
                             console.log('ERROR', e);
                             res.send({
-                                code: 400,
+                                code: 500,
                                 message: 'Unable to add user referer'
                             });
 
@@ -353,8 +375,8 @@ exports.submitRSVP = functions.https.onRequest((req, res) => {
             });
         } else {
             res.send({
-                code: 400,
-                error: 'Code secret invalide, ou utilisateur non autorisé'
+                code: 403,
+                error: 'Code secret invalide, ou utilisateur non autorisé.'
             });
         }
     });

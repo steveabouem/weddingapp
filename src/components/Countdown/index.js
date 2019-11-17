@@ -10,7 +10,7 @@ export const Countdown = () => (
         <div className='flipclock-wrap'>
             <FlipClock 
                 type = "countdown"
-                count_to = "2019/12/28 20:00:00"
+                count_to = "2019/12/28 19:00:00"
                 style={{width: '80%'}}
                 units={[
                     {

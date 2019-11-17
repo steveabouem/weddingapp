@@ -17,8 +17,7 @@ export default class Login extends React.Component {
         this.go = this.go.bind(this);
     }
 
-    submit() {
-        const {code} = this.state;
+    submit({code}) {
         if(code) {
             this.context.loginAdmin(code, this.props)
         }
@@ -59,16 +58,14 @@ export default class Login extends React.Component {
                     <div className='form-wrap login'>
                         <Formik 
                             validationSchema = {validation}
-                            onSubmit={this.submit}
+                            onSubmit={values => this.submit(values)}
                         >
                             {({errors, touched, submitForm}) => (
                                 <React.Fragment>
                                     <div className='field-wrap'>
                                         <label>Code secret</label>
                                         {errors.code && touched.code && <div className='form-error'>{errors.code}</div>}
-                                        <Field name='code' render={(field, form) => (
-                                            <input autoFocus onChange={e => this.setState({code: e.target.value})}/>
-                                        )}/>
+                                        <Field name='code' autofocus/>
                                     </div>
                                     <div className='submit-button' onClick={submitForm}>SOUMETTRE</div>
                                     <div className='submit-button' onClick={this.back}>RETOUR</div>

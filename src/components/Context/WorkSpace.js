@@ -185,7 +185,11 @@ export default class WorkSpace extends React.Component {
                 {data: {userInfo}}
             )
             .then( ({data}) => {
-                if(data.code === 400) {
+                if(data.code === 403 && data.error !== 'Duplicate user') {
+                    toast.error(data.error, {
+                        position: 'bottom-right'
+                    });
+                } else if(data.code === 403 && data.error === 'Duplicate user') {
                     toast.error(data.error, {
                         position: 'bottom-right'
                     });
